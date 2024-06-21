@@ -131,7 +131,7 @@ def main():
         
         ###########################
         #All
-        st.subheader('All Competition')
+        st.subheader('All Competitions')
         st.write("Statistics per Season for selected market value range across **all club competitions** (national league, cups, european cups, no data from national competitions):")
         stats_table_all = display_player_stats_all_competitions(selected_option,quartile_dict, df_playerstats, competitions)
         
