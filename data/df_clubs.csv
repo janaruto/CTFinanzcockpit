@@ -1,0 +1,834 @@
+CompetitionID,ClubName,ClubID
+L2,1.FC Nuremberg,4
+L2,1.FC Kaiserslautern,2
+L3,1.FC Saarbrücken,1
+TR2,Adanaspor,6
+GB1,Liverpool FC,31
+L1,Bayer 04 Leverkusen,15
+IT1,AC Milan,5
+IT2,Brescia Calcio,19
+TR1,Fenerbahce,36
+IT1,Inter Milan,46
+L2,SV 07 Elversberg,64
+L2,FC Hansa Rostock,30
+L1,Borussia Dortmund,16
+L1,Bayern Munich,27
+L3,SpVgg Unterhaching,66
+A1,Austria Vienna,14
+GB3,Derby County,22
+L2,Eintracht Braunschweig,23
+L1,Eintracht Frankfurt,24
+C1,FC Basel 1893,26
+L2,FC St. Pauli,35
+L2,Hertha BSC,44
+TS1,SK Slavia Prague,62
+L3,Borussia Dortmund II,17
+GB1,Arsenal FC,11
+GB1,Everton FC,29
+L2,Karlsruher SC,48
+L2,Fortuna Düsseldorf,38
+L2,Hamburger SV,41
+L1,SC Freiburg,60
+FR2,FC Girondins Bordeaux,40
+SC1,Heart of Midlothian FC,43
+L3,MSV Duisburg,52
+L2,FC Schalke 04,33
+IT1,AS Roma,12
+L1,1.FC Köln,3
+L2,SpVgg Greuther Fürth,65
+ES1,Atlético de Madrid,13
+L1,Borussia Mönchengladbach,18
+L2,Hannover 96,42
+BE1,RSC Anderlecht,58
+C1,Servette FC,61
+L3,Arminia Bielefeld,10
+L1,1.FSV Mainz 05,39
+L3,Rot-Weiss Essen,56
+L3,SSV Ulm 1846,69
+L2,VfL Osnabrück,81
+L1,VfL Wolfsburg,82
+SC1,Rangers FC,124
+L3,SC Verl,93
+UNG1,Debreceni VSC,84
+ES1,FC Barcelona,131
+L1,1.FC Union Berlin,89
+A1,SK Sturm Graz,122
+L2,SC Paderborn 07,127
+ISR1,Maccabi Tel Aviv,119
+C2,FC Aarau,116
+L3,Preußen Münster,91
+L3,SSV Jahn Regensburg,109
+L1,SV Darmstadt 98,105
+L3,TSV 1860 Munich,72
+L1,VfB Stuttgart,79
+L2,SV Wehen Wiesbaden,108
+TR2,Kocaelispor,120
+NL2,NAC Breda,132
+L1,VfL Bochum,80
+L3,SV Waldhof Mannheim,85
+PL1,Widzew Lodz,88
+L3,FC Erzgebirge Aue,94
+L3,VfB Lübeck,78
+L1,SV Werder Bremen,86
+L3,SG Dynamo Dresden,129
+TR1,Caykur Rizespor,126
+IT2,Parma Calcio 1913,130
+TR1,Besiktas JK,114
+TS1,FK Chmel Blsany (- 2016),135
+GB1,Tottenham Hotspur,148
+ES1,Real Betis Balompié,150
+TR1,Galatasaray,141
+KR1,HNK Rijeka,144
+PL1,Zaglebie Lubin,168
+GB2,Southampton FC,180
+C2,FC Vaduz,163
+TR1,Samsunspor,152
+BU1,Levski Sofia,156
+FR1,AS Monaco,162
+L1,FC Augsburg,167
+DK1,FC Copenhagen,190
+BRA1,Sport Club Corinthians Paulista,199
+L2,1.FC Magdeburg,187
+NL2,Roda JC Kerkrade,192
+DK1,Odense Boldklub,173
+ES2,Real Zaragoza,142
+SER1,Red Star Belgrade,159
+NO1,Rosenborg BK,195
+BE1,KAA Gent,157
+A1,Rapid Vienna,170
+TS1,AC Sparta Prague,197
+GB2,Blackburn Rovers,164
+BE1,RSC Charleroi,172
+BU1,CSKA-Sofia,208
+BRA1,Grêmio Foot-Ball Porto Alegrense,210
+PL1,LKS Lodz,256
+C1,FC Winterthur,242
+NL1,RKC Waalwijk,235
+C1,FC Zürich,260
+ES1,RCD Mallorca,237
+IT1,Hellas Verona,276
+ISR1,Hapoel Petah Tikva,262
+PL1,Lech Poznan,238
+NO1,Viking FK,239
+FR1,Olympique Marseille,244
+SE1,AIK Solna,272
+FR2,AJ Auxerre,290
+L3,SC Freiburg II,245
+FR1,Stade Rennais FC,273
+PO1,SL Benfica,294
+GB2,Sunderland AFC,289
+L3,SV Sandhausen,254
+PL1,Legia Warszawa,255
+C1,FC St. Gallen 1879,257
+GB1,Manchester City,281
+L2,Holstein Kiel,269
+A2,SV Ried,266
+BRA1,Santos FC,221
+IT1,Genoa CFC,252
+GR1,Panathinaikos Athens,265
+UNG1,Ferencvárosi TC,279
+C2,FC Sion,321
+PL1,Pogon Szczecin,324
+GB2,Birmingham City,337
+BE1,KV Mechelen,354
+NO1,Lillestrøm SK,353
+ES1,Rayo Vallecano,367
+ES1,Sevilla FC,368
+BRA1,Clube Atlético Mineiro,330
+FR1,FC Metz,347
+GB3,Bolton Wanderers,355
+KR1,NK Osijek,327
+RO1,FC Dinamo Bucharest,312
+A2,Grazer AK 1902,316
+UKR1,Dynamo Kyiv,338
+TS1,FC Banik Ostrava,377
+C1,Yverdon Sport FC,322
+IT2,SSC Bari,332
+RO1,FCSB,301
+GB3,Barnsley FC,349
+PL1,Ruch Chorzow,318
+A2,DSV Leoben,307
+GB1,Sheffield United,350
+GB3,Charlton Athletic,358
+NL1,Twente Enschede FC,317
+ES1,CA Osasuna,331
+PO1,Sporting CP,336
+SC1,Aberdeen FC,370
+SC1,Celtic FC,371
+FR1,FC Toulouse,415
+KR1,GNK Dinamo Zagreb,419
+TR1,Trabzonspor,449
+GB2,Leeds United,399
+GB1,Aston Villa,405
+A1,LASK,413
+DK1,Vejle Boldklub,443
+A1,FC Linz,395
+IT1,US Salernitana 1919,380
+GB1,West Ham United,379
+ES1,Real Madrid,418
+PL1,Górnik Zabrze,428
+KR1,HNK Hajduk Split,447
+NL1,PSV Eindhoven,383
+A1,Red Bull Salzburg,409
+NL2,FC Den Bosch,404
+L3,Hallescher FC,440
+NL2,MVV Maastricht,384
+IT1,SS Lazio,398
+ZYP1,Apollon Limassol,429
+IT1,ACF Fiorentina,430
+C1,FC Luzern,434
+IT1,Torino FC,416
+FR1,OGC Nice,417
+TS2,FK Dukla Prague,450
+IT1,Udinese Calcio,410
+MLS1,Chicago Fire FC,432
+IT2,Ascoli Calcio,408
+SL1,FC Koper,433
+ES1,UD Las Palmas,472
+C1,BSC Young Boys,452
+BRA1,Club Athletico Paranaense,679
+BE1,KFC Lommel SK (- 2003),718
+NL1,FC Volendam,724
+GB1,Fulham FC,931
+GB2,West Bromwich Albion,984
+RO1,FC U Craiova 1948,1007
+GB2,Queens Park Rangers,1039
+IT2,Como 1907,1047
+ES1,Valencia CF,1049
+ISR1,Maccabi Haifa,1064
+GR1,Akratitos Ano Liosion,1119
+C1,Grasshopper Club Zurich,504
+GB2,Stoke City,512
+GB1,Chelsea FC,631
+GR1,OFI Crete FC,653
+FR1,RC Strasbourg Alsace,667
+C2,FC Baden 1897,747
+GB1,Manchester United,985
+GB3,Oxford United,988
+FR1,FC Nantes,995
+NO1,Odds BK,1058
+SE1,IF Elfsborg,1101
+IT2,Ternana Calcio,1103
+GB1,Brentford FC,1148
+BE1,KRC Genk,1184
+GB3,Port Vale FC,1211
+BU1,Etar Veliko Tarnovo,712
+ES2,RCD Espanyol Barcelona,714
+TS1,FK Teplice,814
+TR1,MKE Ankaragücü,868
+FR3,AS Nancy-Lorraine,1159
+BRA1,Cruzeiro Esporte Clube,609
+DK1,FC Midtjylland,865
+NO1,FK Bodø/Glimt,501
+GB2,Cardiff City,603
+C2,Neuchâtel Xamax FCS,625
+BU1,Lokomotiv Sofia,730
+IT1,FC Empoli,749
+FR3,FC Sochaux-Montbéliard,750
+FR1,RC Lens,826
+GB1,Luton Town,1031
+FR1,Olympique Lyon,1041
+GB2,Huddersfield Town,1110
+BE2,KSC Lokeren (- 2020),498
+IT1,Juventus FC,506
+BU1,Pirin Blagoevgrad,521
+GB2,Ipswich Town,677
+TS1,FC Slovan Liberec,697
+PO2,CD Nacional,982
+DK1,Viborg FF,1063
+BE1,Sint-Truidense VV,475
+SC1,Dundee FC,511
+IT2,Venezia FC,607
+UNG1,MTK Budapest,634
+GB2,Middlesbrough FC,641
+GR1,Olympiacos Piraeus,683
+GB1,Newcastle United,762
+TR2,Genclerbirligi Ankara,820
+C2,FC Wil 1900,850
+C2,FC Thun,938
+BE1,KVC Westerlo,968
+ISR1,Hapoel Tel Aviv,1017
+IT1,Bologna FC 1909,1025
+GB3,Reading FC,1032
+GB2,Sheffield Wednesday,1035
+SE1,Djurgårdens IF,1044
+ES1,Villarreal CF,1050
+GB3,Wigan Athletic,1071
+FR2,ESTAC Troyes,1095
+FR2,AC Ajaccio,1147
+FR3,Le Mans FC,1164
+BE1,KV Kortrijk,601
+ES2,CD Tenerife,648
+GB1,Nottingham Forest,703
+SER1,FK Napredak Krusevac,788
+SL1,NK Maribor,790
+SE1,IFK Göteborg,801
+RO1,UTA Arad,952
+IT1,US Lecce,1005
+GB3,Peterborough United,1072
+GB1,Burnley FC,1132
+C1,FC Lausanne-Sport,527
+A1,SC Austria Lustenau,541
+UKR1,Shakhtar Donetsk,660
+SER1,FK Partizan Belgrade,669
+GB3,Cambridge United,986
+FR2,Stade Lavallois,1080
+ES1,Deportivo Alavés,1108
+FR1,FC Lorient,1158
+FR2,SM Caen,1162
+FR1,Paris Saint-Germain,583
+TS1,FK Drnovice,600
+ES1,Real Sociedad,681
+GB2,Bristol City,698
+UNG1,Újpest FC,708
+FR1,Le Havre AC,738
+BRA1,Coritiba Foot Ball Club,776
+GB2,Leicester City,1003
+NO1,SK Brann,1100
+FR3,Chamois Niortais FC,1161
+FR3,FC Martigues,1165
+GR1,Aris Thessaloniki,605
+BRA1,CR Flamengo,614
+PO1,FC Porto,720
+PL1,Slask Wroclaw,759
+FR2,EA Guingamp,855
+TR1,Istanbulspor,924
+ES1,Celta de Vigo,940
+TS1,FC Viktoria Plzen,941
+BRA1,Clube de Regatas Vasco da Gama,978
+GB2,Coventry City,990
+GB2,Watford FC,1010
+BE2,KSK Beveren (- 2010),1073
+PO1,SC Braga,1075
+FR3,CS Sedan-Ardennes,1081
+SE1,BK Häcken,1109
+FR2,AS Saint-Étienne,618
+ZYP1,AEL Limassol,786
+IT1,Atalanta BC,800
+ZYP1,Omonia Nicosia,829
+BU1,Cherno More Varna,967
+FR1,Montpellier HSC,969
+KR1,NK Istra 1961,999
+BRA1,Sociedade Esportiva Palmeiras,1023
+GB2,Millwall FC,1028
+BE1,Royal Antwerp FC,1096
+GB2,Rotherham United,1194
+GB3,Lincoln City,1198
+GB1,Wolverhampton Wanderers,543
+TR1,Antalyaspor,589
+TS1,Bohemians Prague 1905,715
+GB1,Crystal Palace,873
+SC1,Hibernian FC,903
+GB1,AFC Bournemouth,989
+GR1,PAOK Thessaloniki,1091
+GB2,Norwich City,1123
+GB3,Leyton Orient,1150
+SC2,Ayr United FC,1192
+RO1,FC Rapid Bucharest,455
+IT2,Palermo FC,458
+SC1,St. Mirren FC,465
+BRA1,São Paulo Futebol Clube,585
+MLS1,Tampa Bay Mutiny,646
+BU1,Slavia Sofia,675
+SL1,NK Celje,710
+SC1,Motherwell FC,987
+MLS1,Los Angeles Galaxy,1061
+GB2,Preston North End,466
+SE1,Malmö FF,496
+NL2,Helmond Sport,500
+A2,FC Admira Wacker Mödling,503
+L1,TSG 1899 Hoffenheim,533
+BRA1,Botafogo de Futebol e Regatas,537
+FR2,SC Bastia,595
+TS2,FK Viktoria Zizkov,892
+A2,Schwarz-Weiß Bregenz,936
+SE1,Hammarby IF,1059
+FR1,LOSC Lille,1082
+FR3,Red Star FC,1154
+FR3,Nîmes Olympique,1160
+FR3,LB Châteauroux,1175
+BE1,Cercle Brugge ,520
+KR1,NK Varazdin,599
+ES1,Athletic Bilbao,621
+ES2,Racing Santander,630
+NO1,Molde FK,687
+ISR1,Hapoel Haifa,810
+PO1,Moreirense FC,979
+SE1,Halmstads BK,1011
+IT2,UC Sampdoria,1038
+BRA2,Associação Atlética Ponte Preta,1134
+GB1,Brighton & Hove Albion,1237
+SC1,Livingston FC,1241
+GB3,Carlisle United,1220
+C2,FC Schaffhausen,1277
+FR2,Grenoble Foot 38,1290
+NL1,PEC Zwolle,1269
+SC2,Dunfermline Athletic FC,1270
+NL2,FC Emmen,1283
+NO1,Tromsø IL,1293
+BE1,KAS Eupen,1245
+NO1,Stabæk Fotball,1274
+NL2,RBC Roosendaal,1227
+NL2,TOP Oss,1228
+ES2,CD Leganés,1244
+MLS1,Colorado Rapids,1247
+GB3,Northampton Town,1302
+NL1,Heracles Almelo,1304
+A2,SC Untersiebenbrunn 1932,1378
+IT2,Modena FC,1385
+PO2,CS Marítimo,1301
+TS1,SK Dynamo Ceske Budejovice,1321
+UNG1,Zalaegerszegi TE FC,1391
+NL2,AGOVV Apeldoorn (- 2013),1389
+IT1,Cagliari Calcio,1390
+TS1,FK Jablonec,1322
+NL2,VVV-Venlo,1426
+FR2,Angers SCO,1420
+BE2,RAEC Mons (- 2015),1411
+TR2,Göztepe,1467
+FR2,Amiens SC,1416
+PO1,GD Estoril Praia,1465
+FR1,Stade Reims,1421
+FR2,Valenciennes FC,1423
+BE2,Beringen Heusden-Zolder SK,1417
+NL2,SC Telstar,1434
+ES2,Burgos CF,1536
+ES2,Albacete Balompié,1532
+TS1,FK Pardubice,1496
+FR3,FC Rouen 1899,1564
+SC2,Dundee United FC,1519
+ES2,Elche CF,1531
+ES2,SD Eibar,1533
+L3,FC Viktoria Köln,1622
+BRA2,Mogi Mirim EC,1784
+BRA2,Londrina Esporte Clube (PR),1693
+BE2,KFC Verbroedering Geel (- 2008),1749
+BRA2,Guarani Futebol Clube (SP),1755
+TS1,FC Hradec Kralove,1897
+DK1,Hvidovre IF,1894
+L1,1.FC Heidenheim 1846,2036
+BRA2,Avaí FC,2035
+C2,AC Bellinzona,2047
+BRA2,Ceará Sporting Club,2029
+A1,Union Wels (- 2003),2084
+BRA2,Esporte Clube Vitória,2125
+ZYP1,AEK Larnaca,2156
+A1,FC Blau-Weiss Linz,2157
+IT2,US Cremonese,2239
+GB2,Plymouth Argyle,2262
+BU1,Lokomotiv Plovdiv,2259
+GB2,Swansea City,2288
+A2,BSV Bad Bleiberg,2277
+TS1,SK Sigma Olomouc,2311
+KR1,Slaven Belupo Koprivnica,2362
+PL1,Jagiellonia Bialystok,2300
+TR1,Konyaspor,2293
+A2,First Vienna FC,2364
+BE1,Club Brugge KV,2282
+BE2,KMSK Deinze,2321
+A2,SV Kapfenberg,2394
+TR2,Altay SK,2375
+GR1,AEK Athens,2441
+MLS1,D.C. United,2440
+ES2,Sporting Gijón,2448
+SC2,Inverness Caledonian Thistle FC,2451
+PO1,CF Estrela Amadora SAD,2431
+GB3,Bristol Rovers,2455
+PO1,Gil Vicente FC,2424
+A1,WSG Tirol,2446
+PO1,Rio Ave FC,2425
+TR1,Sivasspor,2381
+PO1,Vitória Guimarães SC,2420
+PO2,CD Santa Clara,2423
+PO2,SC União Torreense,2432
+BRA1,Fluminense Football Club,2462
+TR2,Sakaryaspor,2463
+BU1,Botev Plovdiv,2531
+PO1,Boavista FC,2503
+SC1,Kilmarnock FC,2553
+TS2,FK Pribram,2598
+SC1,St. Johnstone FC,2578
+NO1,FK Haugesund,2761
+PO2,União de Leiria,2639
+BE2,RFC Seraing,2715
+NL2,ASC De Volewijckers,2711
+GR1,PAS Giannina,2671
+SC2,Partick Thistle FC ,2760
+SE1,Mjällby AIF,2719
+RO1,Progresul Bucharest (- 2009),2754
+SC1,Ross County FC,2759
+ES1,Cádiz CF,2687
+UKR1,Vorskla Poltava,2740
+BE1,Oud-Heverlee Leuven,2727
+A2,SKN St. Pölten,2662
+PL1,Dyskobolia Grodzisk Wielkopolski,2775
+TR1,Gaziantep FK,2832
+ZYP1,APOEL Nicosia,2784
+NO1,Strømsgodset IF,2817
+UKR1,Metalurg Donetsk (- 2015),2783
+C1,FC Lugano,2790
+SC2,Airdrieonians FC,2802
+SC2,Raith Rovers FC,2795
+SE1,IFK Norrköping,2844
+GB3,Wycombe Wanderers,2805
+DK1,FC Nordsjaelland,2778
+BE2,KV Oostende,2861
+BRA1,América Futebol Clube (MG),2863
+IT1,AC Monza,2919
+SC2,Greenock Morton FC,3026
+BE2,Royal Francs Borains,2974
+GB2,Hull City,3008
+GB3,Burton Albion,2963
+BE1,RWD Molenbeek (- 2002),2973
+PO2,FC Paços de Ferreira,2995
+FR3,Dijon FCO,2969
+SC1,Gretna FC (- 2008),3029
+ISR1,Hapoel Beer Sheva,2976
+SC2,Arbroath FC,3021
+SC2,Queen's Park FC,3031
+SER1,FK TSC Backa Topola,3137
+GB3,Shrewsbury Town,3054
+GR1,Atromitos Athens,3060
+BE2,RFC Lüttich,3159
+BE1,Standard Liège,3057
+FR2,Pau FC,3166
+BE2,Standaard Wetteren,3083
+PO1,Desportivo Aves (- 2020),3336
+PO1,FC Famalicão,3329
+PO2,Leixões SC,3345
+TR1,Pendikspor,3209
+ES1,UD Almería,3302
+PO1,GD Chaves,3325
+ES2,Levante UD,3368
+BRA1,Goiás EC,3197
+BE2,Patro Eisden Maasmechelen,3225
+PO1,Casa Pia AC,3268
+TR1,Kayserispor,3205
+BRA2,Tombense Futebol Clube (MG),3234
+PO2,CD Feirense,3349
+BRA2,Sampaio Corrêa Futebol Clube (MA),3319
+PO2,FC Penafiel,3327
+TR2,Boluspor,3207
+ZYP1,Doxa Katokopias,3393
+GR1,Panserraikos,3385
+GB3,Cheltenham Town,3371
+BE2,SV Zulte Waregem,3508
+FR3,SO Cholet,3525
+FR1,Clermont Foot 63,3524
+IT2,Spezia Calcio,3522
+SE1,Kalmar FF,3654
+SE1,IFK Värnamo,3622
+SE1,Degerfors IF,3641
+A1,SCR Altach,3551
+UKR1,Kryvbas Kryvyi Rig,3592
+GB3,Stevenage FC,3684
+ISR1,Beitar Jerusalem,3793
+ZYP1,Anorthosis Famagusta,3899
+BRA2,Mirassol Futebol Clube (SP),3876
+FR1,Stade Brestois 29,3911
+ISR1,Maccabi Petah Tikva,3785
+BE1,Royale Union Saint-Gilloise,3948
+ES1,Getafe CF,3709
+TS2,SK Hanacka Slavia Kromeriz,3795
+TR1,Adana Demirspor,3840
+IT2,AS Cittadella,4084
+IT2,US Catanzaro,4097
+IT2,Pisa Sporting Club,4172
+PL1,Orlen Plock,4006
+MLS1,CF Montréal,4078
+SL1,NS Mura,4059
+IT2,Cosenza Calcio,4031
+GR1,PAS Lamia 1964,3999
+MLS1,Portland Timbers,4291
+NO1,Hamarkameratene,4309
+PO1,SC Farense,4294
+A2,SC Schwanenstadt 08,4319
+A2,SK Sturm Graz II,4443
+A1,Wolfsberger AC,4441
+A1,TSV Hartberg,4467
+IT2,FC Südtirol,4554
+ZYP1,Ethnikos Achnas,4590
+SER1,FK Radnicki 1923 Kragujevac,4645
+SER1,FK Vozdovac,4634
+BRA2,Ituano Futebol Clube (SP),4773
+L3,FC Ingolstadt 04,4795
+SL1,NK Olimpija Ljubljana,4772
+ISR1,Ihud Bnei Sakhnin,4769
+SL1,SD NK Ljubljana,4770
+RO1,SC Otelul Galati,4959
+BE2,Lommel SK,5026
+BE2,KV Red Star Waasland,5153
+TS2,FC Zbrojovka Brno,5225
+ISR1,Maccabi Netanya,5223
+C2,FC Stade Nyonnais,5507
+TS1,FC Zlin,5545
+IT2,Calcio Lecco 1912,5514
+TS1,1.FC Slovacko,5544
+TS1,FK Mlada Boleslav,5546
+C1,FC Stade-Lausanne-Ouchy,5499
+NO1,Aalesunds FK,5619
+IT2,AC Reggiana 1919,5621
+PL1,Cracovia,5689
+DK1,Randers FC,5724
+BRA2,Vila Nova Futebol Clube (GO),5677
+DK1,Haderslev FK (SE II),5778
+ISR1,Hapoel Beit Shean,6026
+ISR1,FC Ashdod,6105
+PL1,Piast Gliwice,6112
+TS2,SK Sigma Olomouc B,6038
+PL1,Korona Kielce,6110
+SL1,NK Domzale,6248
+IT1,SSC Napoli,6195
+RO1,FC Universitatea Cluj,6429
+UKR1,Metalist Kharkiv (- 2016),6414
+GR1,Panetolikos GFS,6418
+NO1,Sandefjord Fotball,6399
+FR2,Olympique Charleville-Neufmanil-Aiglemont,6333
+TS2,AC Sparta Prague B,6483
+BRA1,Sport Club Internacional,6600
+MLS1,CD Chivas USA,6642
+SER1,FK Mladost Lucani,6622
+IT1,US Sassuolo,6574
+SER1,FK Cukaricki,6621
+TR2,Sanliurfaspor,6630
+TR1,Fatih Karagümrük,6646
+GB3,Exeter City,6699
+GR1,Asteras Tripolis,6676
+BU1,Beroe Stara Zagora,6764
+PO1,FC Vizela,6912
+TR1,Basaksehir FK,6890
+UKR1,Metalurg Zaporizhya (-2016),6994
+UKR1,Goverla Uzhgorod (- 2016),6996
+UKR1,FK Mariupol,6993
+UKR1,Chornomorets Odessa,6992
+PO2,CD Mafra,7056
+PO2,UD Vilafranquense,7119
+PL1,Radomiak Radom,7154
+PL1,Warta Poznan,7146
+FR2,Quevilly - Rouen Métropole,7124
+TR2,Eyüpspor,7160
+BRA2,Criciúma Esporte Clube,7178
+BRA2,ABC Futebol Clube (RN),7209
+PO2,CD Tondela,7179
+PO1,Portimonense SC,7378
+ZYP1,AE Pafos,7475
+A2,FC Dornbirn,7448
+A2,Floridsdorfer AC,7443
+SER1,FK Radnicki Nis,7567
+FR3,SO Cassis Carnoux,7670
+A2,Vöcklabrucker Sportclub,7695
+TR1,Hatayspor,7775
+RO1,CFR Cluj,7769
+PO2,Académico Viseu FC,7788
+TS2,MFK Chrudim,7805
+SE1,IK Sirius,7945
+PO1,FC Arouca,8024
+TS2,FC Vysocina Jihlava,7975
+PO2,Länk FC Vilaverdense ,8424
+SLO1,FC Senec (1990 - 2008),8146
+TS2,FK Varnsdorf,8541
+ZYP1,APOP Kinyras Pegias,8554
+ZYP1,Alki Larnaca,8701
+BRA2,Sport Club do Recife,8718
+RO1,FC Botosani,8818
+SER1,FK Javor-Matis Ivanjica,8819
+BRA1,Red Bull Bragantino,8793
+PO2,UD Oliveirense,8827
+IT1,Frosinone Calcio,8970
+BRA2,Botafogo FC,9030
+BE2,FCV Dender EH,9010
+FR2,USL Dunkerque,9202
+UNG1,Diósgyőri VTK,9241
+RO1,Petrolul Ploiesti,9465
+RO1,Politehnica Iasi (1945 - 2010),9560
+IT2,Feralpisalò,9439
+PL1,Rakow Czestochowa,9644
+FR2,Paris FC,10004
+BRA1,Esporte Clube Bahia,10010
+A2,SV Horn,10044
+NO1,Sarpsborg 08 FF,10217
+PO2,FC Porto B,10331
+PO2,SL Benfica B,10330
+ES2,FC Andorra,10718
+FR3,US Orléans,10868
+FR3,SAS Epinal,10838
+BRA2,Esporte Clube Juventude,10492
+BRA1,Fortaleza Esporte Clube,10870
+KR1,NK Lokomotiva Zagreb,11194
+SE1,Varbergs BoIS,10507
+UNG1,Fehérvár FC,11107
+GB3,Fleetwood Town,11177
+SL1,NK Aluminij Kidricevo,11033
+ZYP1,Aris Limassol,10586
+UKR1,Zorya Lugansk,10690
+KR1,NK Rudes,11083
+PO2,CS Marítimo B,10787
+MLS1,Toronto FC,11141
+FR2,Rodez AF,11273
+TR1,Kasimpasa,10484
+RO1,Unirea Urziceni ( - 2011),10442
+FR2,Athlétic Club Arlésien,11300
+FR3,Gap Foot 05,10876
+TR1,Alanyaspor,11282
+BRA2,Clube de Regatas Brasil (AL),11449
+A1,SK Austria Kärnten (-2010),11609
+TR2,Giresunspor,11688
+TS2,Fotbal Fulnek,12823
+ES1,Girona FC,12321
+ES2,CD Mirandés,13222
+UNG1,Kecskeméti TE,12423
+ES2,CF Reus Deportiu (-2020),13225
+C2,FC Le Mont LS,12424
+UNG1,Paksi FC,12163
+A2,SKU Amstetten,12210
+TR2,Ankara Keciörengücü,12388
+ES2,CD Eldense,12567
+TS2,FC Sellier & Bellot Vlasim,13299
+FR3,FC Versailles 78,13466
+A2,WSG Radenthein,13647
+TS2,1.SK Prostejov,13718
+TS1,MFK Karvina,13726
+TS2,MFK Vyskov,13753
+ISR1,Hapoel Tzafririm Holon,14792
+BRA2,Guaratinguetá Futebol Ltda. (SP),15064
+BRA2,Atlético Clube Goianiense,15172
+SER1,FK Spartak Subotica,15276
+BRA2,Duque de Caxias Futebol Clube (RJ),15656
+UKR1,Desna Chernigiv,16239
+ES1,Granada CF,16795
+BRA2,Associação Chapecoense de Futebol,17776
+UKR1,PFK Lviv,18105
+UKR1,FK Oleksandriya,18303
+FR3,FC Villefranche-Beaujolais,18633
+DK1,Boldklubben 1903,18774
+ZYP1,Nea Salamina Famagusta,18945
+TS1,AFK Atlantic Lazne Bohdanec (-2000),18966
+BE2,KV Woluwe Zaventem,19588
+A2,SV Lafnitz,19536
+TR2,Yeni Malatyaspor,19789
+A2,SV Thörl,20193
+A2,SV Stripfing,20296
+TR2,Bandirmaspor,20760
+SL1,NK Radomlje,21460
+FR2,US Concarneau,21688
+PL1,Stal Mielec,22431
+FR3,ES Pays d'Uzès,23206
+RO1,FC International Curtea de Arges ,23524
+UNG1,Mezőkövesd Zsóry FC,24032
+TR2,Ümraniyespor,24245
+L1,RB Leipzig,23826
+TS2,SK Lisen,24325
+BE2,Standard de Liège 16 FC,24394
+KR1,HNK Gorica,24575
+A2,VfB Mödling,25598
+UNG1,Stadler FC,26269
+BU1,Hebar Pazardzhik,26563
+SL1,NK Bravo,26985
+BU1,Botev Vratsa,26462
+A1,SK Admira Vienna (- 1971),26752
+UKR1,NK Veres Rivne,26459
+ES2,Atlético Almería (-1960),26775
+FR3,US Avranches,26871
+UNG1,Egri FC,27397
+BRA1,Cuiabá Esporte Clube (MT),28022
+BE2,KSK Lierse Kempenzonen,28107
+TS2,FC SILON Taborsko,28596
+FR3,CA Bastia (- 2017),28559
+NL2,FC Amsterdam (- 1982),28552
+BE2,SK Beveren,28643
+NL2,DFC Dordrecht,28663
+NL1,Holland Sport (- 1971),28722
+A1,SK Austria Klagenfurt,28760
+PL1,Puszcza Niepolomice,28893
+BE2,Royal Excel Mouscron (-2022),29228
+RO1,FCV Farul Constanta,29831
+GR1,AE Kifisias,30120
+FR2,FC Annecy,30204
+FR3,Grand Ouest Association Lyonnaise FC,30443
+UNG1,Kisvárda FC,30613
+ZYP1,Othellos Athienou,30606
+BE2,RSCA Futures,30857
+ISR1,Hapoel Tayibe,31176
+BU1,Ludogorets Razgrad,31614
+UKR1,CSKA-Borysfen Boryspil,32131
+NL1,RKSV Sittardia (- 1968),32464
+AZ1,Ravan Baku,33315
+SER1,FK Radnik Surdulica,33328
+RO1,ACSM Politehnica Iasi,33966
+A2,SV St. Veit (- 1989),34428
+NL2,HVC Amersfoort,34729
+A2,SC Kufstein (- 1987),35701
+SLO1,MFK Skalica,35488
+A2,IG Bregenz/Dornbirn (- 1987),35755
+A2,FC Liefering,37024
+UNG1,Puskás Akadémia FC,37169
+BRA2,Grêmio Novorizontino,37474
+TR2,Corum FK,37951
+NL2,FC Vlaardingen '74 (- 1981),37992
+ES2,CP Mérida (- 2000),38011
+NL2,Fortuna Vlaardingen,38152
+IT2,AC Magenta,38812
+FR3,UJA Alfortville,38643
+UKR1,Obolon Kyiv,39097
+A2,SPG Innsbruck (- 1982),39529
+TR2,Erzurumspor FK,39722
+TR2,Tuzlaspor,39805
+MLS1,New York City FC,40058
+BU1,Arda Kardzhali,40604
+BU1,Chernomorets Burgas Sofia,40451
+AZ1,Bakyly Baku (- 2017),40353
+RO1,FC Voluntari,40843
+RO1,CS Universitatea Craiova,40812
+BE2,Beerschot V.A.,41274
+ES2,Club Atlético Marbella (- 1997),42872
+IT1,Associazione Calcio Liguria,42864
+ISR1,Hapoel Jerusalem,43119
+BE2,Club NXT,43560
+TR2,Bodrum FK,44006
+ZYP1,Pafos FC,45457
+BE2,Jong Genk,46736
+UKR1,Kolos Kovalivka,48332
+UKR1,Rukh Lviv,48726
+GR1,AO Chalkidona,48858
+TS1,FC Slovacka Slavia Uherske Hradiste,48824
+TR2,Manisa FK,48913
+SLO1,FC Kosice,51316
+ISR1,Hapoel Hadera,51931
+IT2,Atletico Piombino,53041
+UKR1,Polissya Zhytomyr,53646
+BE1,RWD Molenbeek,54189
+BE1,RFC Seraing (- 1996),54426
+RO1,Sepsi OSK Sf. Gheorghe,54585
+SL1,NK Rogaska,55601
+UKR1,Metalist 1925 Kharkiv,55686
+MLS1,Minnesota United FC,56089
+IT2,US Albatrastevere,57287
+UNG1,VM Egyetértés SK,56712
+IT2,US Arsenaltaranto,57288
+C2,FC Malcantone Agno (- 2004),57291
+RO1,FC Hermannstadt,58049
+SER1,Zeleznicar Pancevo,59358
+UNG1,Gázszer FC,59650
+UKR1,SK Dnipro-1,60551
+GR1,Volos NPS,60949
+BU1,CSKA 1948,61955
+UKR1,FK Minaj,61825
+C2,US Pro Daro,62332
+UKR1,LNZ Cherkasy,63007
+FR1,SC Nîmes,63668
+UNG1,Soproni FAC,66067
+MLS1,Inter Miami CF,69261
+ISR1,Maccabi Bnei Reineh,70178
+MLS1,Austin FC,72309
+ES2,Sociedad Gimnástica Lucense (-1952),75973
+TS1,FC Karvina (-2003),81655
+ES2,Palencia CF,85175
+A1,Favoritner SC (- 1936),86497
+A1,SC Austro Fiat Wien (- 1940),86603
+A1,LSV Markersdorf (- 1945),87756
+PO1,Uniao Foot-Ball Lissabon,88580
+NL1,Xerxes/DHC '66 (- 1968),90979
+NL1,VV DOS Utrecht,90990
+BU1,Krumovgrad,91158
+FR3,Marignane-Gignac-Côte-Bleue FC,100739
+PO2,Avs Futebol SAD,110302
