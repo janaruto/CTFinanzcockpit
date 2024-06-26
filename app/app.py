@@ -63,7 +63,42 @@ def main():
         "Choose the range where your player's market value falls (defined by the 25%, 50%, 75% quartile borders of the Market Values according to the position and the league in which the selected club competes, over the last 5 seasons):",
         list(quartile_dict.keys())
     )
+    
+    ################################################################################
+    #Premiums
+    ################################################################################
+    
+    st.subheader('Premiums')
+    
+    # List of variables
+    variables = [
+        'Goal in main competition', 'Assist in main competition', 'ScorerPoint in main competition',
+        'Minutes played in main competition', 'Appearance in main competition',
+        'Goal across all competitions', 'Assist across all competitions', 'ScorerPoint across all competitions',
+        'Minutes played across all competitions', 'Appearance across all competitions',
+        'Won games in main competition', 'Placement in main competition', 'Points in main competition'
+    ]
+    
+    premiums = ['Minutes played in main competition','Minutes played across all competitions', 
+                'Appearance across all competitions','Won games in main competition', 'Placement in main competition', 'Points in main competition'] 
 
+    # Multiselect for variables
+    selected_variables = st.multiselect(
+        "Choose the Premiums which your club wants to offer to their fans:",
+        variables
+    )
+
+    # Dictionary to store input values for each selected variable
+    inputs_premiums = {}
+
+    # Display input fields for each selected variable
+    for var in selected_variables:
+        
+        if (var in premiums) ==False:
+            inputs_premiums[var] = st.number_input(f"Payout per {var}:", value=0)
+        else:
+            inputs_premiums[var] = st.number_input(f"Payout for {var}:", value=0)
+    
     ###########################################################################
     # MainStats Function to process the selected option and display the table
     ###########################################################################
@@ -125,9 +160,7 @@ def main():
         stats_table_main.columns = ['Goals', 'Assists', 'Scorer Points', 'Minutes Played', 'Appearances']
         
         # Format the DataFrame
-        stats_table_main = stats_table_main.style.format(precision=1)
-        
-        st.table(stats_table_main)
+        st.table(stats_table_main.style.format(precision=1))
         
         ###########################
         #All
@@ -143,9 +176,7 @@ def main():
         stats_table_all.columns = ['Goals', 'Assists', 'Scorer Points', 'Minutes Played', 'Appearances']
         
         # Format the DataFrame
-        stats_table_all = stats_table_all.style.format(precision=1)
-        
-        st.table(stats_table_all)
+        st.table(stats_table_all.style.format(precision=1))
         
         
         ###########################
@@ -157,6 +188,79 @@ def main():
         df_league_filtered.set_index('Season', inplace=True)
         st.table(df_league_filtered)
         
+        ################################################################################
+        #Expected costs
+        ################################################################################
+        st.subheader('Expected costs')
+        
+        cost_dictionary = {}
+        
+        for var, amount in inputs_premiums.items():
+            
+            if 'main competition' in var:
+                
+                if 'Goal' in var:
+                    multiplicator = stats_table_main.at['Stats', 'Goals']
+                    cost = multiplicator * amount
+                elif 'Assist' in var:
+                    multiplicator = stats_table_main.at['Stats', 'Assists']
+                    cost = multiplicator * amount
+                elif 'Scorer' in var:
+                    multiplicator = stats_table_main.at['Stats', 'Scorer Points']
+                    cost = multiplicator * amount
+                elif 'Appearance' in var:
+                    multiplicator = stats_table_main.at['Stats', 'Appearances']
+                    cost = multiplicator * amount
+                else:
+                    cost = amount
+                    
+                
+            elif 'all competition' in var:
+                
+                if 'Goal' in var:
+                    multiplicator = stats_table_all.at['Stats', 'Goals']
+                    cost = multiplicator * amount
+                elif 'Assist' in var:
+                    multiplicator = stats_table_all.at['Stats', 'Assists']
+                    cost = multiplicator * amount
+                elif 'Scorer' in var:
+                    multiplicator = stats_table_all.at['Stats', 'Scorer Points']
+                    cost = multiplicator * amount
+                elif 'Appearance' in var:
+                    multiplicator = stats_table_all.at['Stats', 'Appearances']
+                    cost = multiplicator * amount
+                else:
+                    cost = amount
+                    
+            else:
+                
+                cost = amount
+                
+            cost_dictionary[var] = cost
+            
+        # Create a DataFrame from the dictionary
+        df_costs = pd.DataFrame(list(cost_dictionary.items()), columns=['Variable', 'Costs'])
+
+        # Calculate the sum of the 'Costs' column
+        total_cost = df_costs['Costs'].sum()
+
+        # Add a summary row
+        summary_row = pd.DataFrame([['Sum', total_cost]], columns=['Variable', 'Costs'])
+        df_costs = pd.concat([df_costs, summary_row], ignore_index=True)
+        
+        # Function to format the table with the last row bold
+        def make_table_bold(df):
+            html = df.to_html(index=False, escape=False)
+            # Split the table into rows
+            rows = html.split('<tr>')
+            # Bold the last row
+            rows[-2] = '<tr><b>' + rows[-2] + '</b>'
+            # Join the rows back together
+            bolded_html = '<tr>'.join(rows)
+            return bolded_html
+
+        # Use Streamlit to display the table
+        st.markdown(make_table_bold(df_costs), unsafe_allow_html=True)
         
 if __name__ == '__main__':
     main()
