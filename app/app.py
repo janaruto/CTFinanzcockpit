@@ -20,6 +20,16 @@ def main():
     
     # User input features
     
+    # Funding
+    st.subheader('Funding')
+    funding = st.number_input(
+        label='Amount of funding through Crowdtransfer platform',
+        min_value=0,  # minimum value allowed
+        max_value=100000000,  # maximum value allowed
+        value=0,  # default value
+        step=10000  # step size
+    )
+    
     # Club
     st.subheader('Club')
     clubname = st.selectbox('Select your Club', df_clubs['ClubName'], format_func=lambda x: x.strip())
@@ -65,39 +75,50 @@ def main():
     )
     
     ################################################################################
-    #Premiums
+    #Rewards & Premiums
     ################################################################################
     
     st.subheader('Premiums')
     
     # List of variables
-    variables = [
-        'Goal in main competition', 'Assist in main competition', 'ScorerPoint in main competition',
-        'Minutes played in main competition', 'Appearance in main competition',
-        'Goal across all competitions', 'Assist across all competitions', 'ScorerPoint across all competitions',
-        'Minutes played across all competitions', 'Appearance across all competitions',
-        'Won games in main competition', 'Placement in main competition', 'Points in main competition'
+    premium_variables = [
+        'Goal in main competition', 'Assist in main competition', 'ScorerPoint in main competition', 'Appearance in main competition',
+        'Goal across all competitions', 'Assist across all competitions', 'ScorerPoint across all competitions', 'Appearance across all competitions'
     ]
-    
-    premiums = ['Minutes played in main competition','Minutes played across all competitions', 
-                'Appearance across all competitions','Won games in main competition', 'Placement in main competition', 'Points in main competition'] 
 
     # Multiselect for variables
-    selected_variables = st.multiselect(
-        "Choose the Premiums which your club wants to offer to their fans:",
-        variables
+    selected_premium_variables = st.multiselect(
+        "Choose the Premiums which your club wants to offer to your fans:",
+        premium_variables
     )
 
     # Dictionary to store input values for each selected variable
     inputs_premiums = {}
 
     # Display input fields for each selected variable
-    for var in selected_variables:
+    for var in selected_premium_variables:
         
-        if (var in premiums) ==False:
-            inputs_premiums[var] = st.number_input(f"Payout per {var}:", value=0)
-        else:
-            inputs_premiums[var] = st.number_input(f"Payout for {var}:", value=0)
+        inputs_premiums[var] = st.number_input(f"Payout per {var}:", value=0)
+        
+    st.subheader('Rewards')
+            
+    reward_variables = ['Minutes played in main competition','Minutes played across all competitions',
+                        'Won games in main competition', 'Placement in main competition', 'Points in main competition'] 
+    
+    # Multiselect for variables
+    selected_reward_variables = st.multiselect(
+        "Choose the Rewards which your club wants to offer to your fans:",
+        reward_variables
+    )
+    
+    # Dictionary to store input values for each selected variable
+    inputs_rewards = {}
+    
+    # Display input fields for each selected variable
+    for var in selected_reward_variables:
+        
+        inputs_rewards[var] = st.number_input(f"Payout for {var}:", value=0)
+        
     
     ###########################################################################
     # MainStats Function to process the selected option and display the table
@@ -191,7 +212,7 @@ def main():
         ################################################################################
         #Expected costs
         ################################################################################
-        st.subheader('Expected costs')
+        st.subheader('Expected Payback')
         
         cost_dictionary = {}
         
@@ -238,6 +259,10 @@ def main():
                 
             cost_dictionary[var] = cost
             
+        for var, amount in inputs_rewards.items():
+            
+            cost_dictionary[var] = amount
+            
         # Create a DataFrame from the dictionary
         df_costs = pd.DataFrame(list(cost_dictionary.items()), columns=['Variable', 'Costs'])
 
@@ -247,6 +272,8 @@ def main():
         # Add a summary row
         summary_row = pd.DataFrame([['Sum', total_cost]], columns=['Variable', 'Costs'])
         df_costs = pd.concat([df_costs, summary_row], ignore_index=True)
+        df_costs['Percentage of total Funding'] = df_costs.Costs/funding*100
+        df_costs['Percentage of total Funding'] = df_costs['Percentage of total Funding'].round(1)
         
         # Function to format the table with the last row bold
         def make_table_bold(df):
