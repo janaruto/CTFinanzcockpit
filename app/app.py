@@ -75,9 +75,8 @@ def main():
     )
     
     ################################################################################
-    #Rewards & Premiums
+    #Premiums
     ################################################################################
-    
     st.subheader('Premiums')
     
     # List of variables
@@ -100,6 +99,10 @@ def main():
         
         inputs_premiums[var] = st.number_input(f"Payout per {var}:", value=0, step=1000)
         
+        
+    ################################################################################
+    #Rewards
+    ################################################################################
     st.subheader('Rewards')
             
     reward_variables = ['Minutes played in main competition','Minutes played across all competitions',
@@ -117,7 +120,54 @@ def main():
     # Display input fields for each selected variable
     for var in selected_reward_variables:
         
-        inputs_rewards[var] = st.number_input(f"Payout for {var}:", value=0, step=1000)
+        # Create columns for min and max payouts
+        col1, col2 = st.columns(2)
+
+        # Calculate initial percentage values
+        min_payout = st.session_state.get(f"min_payout_{var}", 0)
+        max_payout = st.session_state.get(f"max_payout_{var}", 10000)
+        min_percentage_of_funding = (min_payout / funding) * 100 if funding > 0 else 0
+        max_percentage_of_funding = (max_payout / funding) * 100 if funding > 0 else 0
+        
+        with col1:
+            min_percentage_of_funding = st.number_input(
+                f"Min Percentage of funding for {var}:", 
+                min_value=0.0, max_value=100.0, 
+                value=round(min_percentage_of_funding, 1), 
+                step=0.1, format="%.1f",
+                key=f"min_percent_{var}"
+            )
+        with col2:
+            max_percentage_of_funding = st.number_input(
+                f"Max Percentage of funding for {var}:", 
+                min_value=0.0, max_value=100.0, 
+                value=round(max_percentage_of_funding, 1), 
+                step=0.1, format="%.1f",
+                key=f"max_percent_{var}"
+            )
+
+        # Update payouts based on percentage input
+        min_payout = round((min_percentage_of_funding / 100) * funding)
+        max_payout = round((max_percentage_of_funding / 100) * funding)
+        
+        with col1:
+            min_payout = st.number_input(
+                f"Minimum payout for {var}:", 
+                value=min_payout, 
+                min_value=0, 
+                step=1000, 
+                key=f"min_payout_{var}"
+            )
+        with col2:
+            max_payout = st.number_input(
+                f"Maximum payout for {var}:", 
+                value=max_payout, 
+                min_value=0, 
+                step=1000, 
+                key=f"max_payout_{var}"
+            )
+        
+
         
     
     ###########################################################################
