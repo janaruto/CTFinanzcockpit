@@ -1,5 +1,16 @@
 import streamlit as st
 import pandas as pd
+import re
+
+def extract_numbers(input_string):
+    # Use regular expression to find the first number and the percentage
+    match = re.match(r"(\d+) Wins - (\d+)%", input_string)
+    if match:
+        first_number = int(match.group(1))
+        percentage_number = int(match.group(2))
+        return first_number, percentage_number
+    else:
+        return None, None
 
 # Or, if the image is stored locally
 st.image('data/cd_logo.png')
@@ -120,52 +131,88 @@ def main():
     # Display input fields for each selected variable
     for var in selected_reward_variables:
         
-        # Create columns for min and max payouts
-        col1, col2 = st.columns(2)
+        if var == 'Won games in main competition':
+            
+            bracket = ['9 Wins - 25%', '18 Wins - 50%', '36 Wins -100%'] 
+    
+            # Multiselect for variables
+            bracket_selected = st.selectbox(
+                "Choose the percentage of payout to your fans:",
+                bracket
+            )
+            
+            col1, col2 = st.columns(2)
 
-        # Calculate initial percentage values
-        min_payout = st.session_state.get(f"min_payout_{var}", 0)
-        max_payout = st.session_state.get(f"max_payout_{var}", 10000)
-        min_percentage_of_funding = (min_payout / funding) * 100 if funding > 0 else 0
-        max_percentage_of_funding = (max_payout / funding) * 100 if funding > 0 else 0
+            # Calculate initial percentage values
+            first_number, percentage_number = extract_numbers(bracket_selected)
+            
+            # store for expected costs table
+            inputs_rewards[var] = percentage_number*funding/100
         
-        with col1:
-            min_percentage_of_funding = st.number_input(
-                f"Min Percentage of funding for {var}:", 
-                min_value=0.0, max_value=100.0, 
-                value=round(min_percentage_of_funding, 1), 
-                step=0.1, format="%.1f",
-                key=f"min_percent_{var}"
-            )
-        with col2:
-            max_percentage_of_funding = st.number_input(
-                f"Max Percentage of funding for {var}:", 
-                min_value=0.0, max_value=100.0, 
-                value=round(max_percentage_of_funding, 1), 
-                step=0.1, format="%.1f",
-                key=f"max_percent_{var}"
-            )
+            
+            with col1:
+                st.text(
+                    f"Percentage of funding: {str(percentage_number)}"
+                )
+            with col2:
+                st.text(
+                    f"Amount of games which have to be won: {str(first_number)}"
+                )
+                
 
-        # Update payouts based on percentage input
-        min_payout = round((min_percentage_of_funding / 100) * funding)
-        max_payout = round((max_percentage_of_funding / 100) * funding)
+        else:
         
-        with col1:
-            min_payout = st.number_input(
-                f"Minimum payout for {var}:", 
-                value=min_payout, 
-                min_value=0, 
-                step=1000, 
-                key=f"min_payout_{var}"
-            )
-        with col2:
-            max_payout = st.number_input(
-                f"Maximum payout for {var}:", 
-                value=max_payout, 
-                min_value=0, 
-                step=1000, 
-                key=f"max_payout_{var}"
-            )
+            # Create columns for min and max payouts
+            col1, col2 = st.columns(2)
+
+            # Calculate initial percentage values
+            min_payout = st.session_state.get(f"min_payout_{var}", 0)
+            max_payout = st.session_state.get(f"max_payout_{var}", 10000)
+            
+            # store for expected costs table
+            inputs_rewards[var] = max_payout
+            
+            min_percentage_of_funding = (min_payout / funding) * 100 if funding > 0 else 0
+            max_percentage_of_funding = (max_payout / funding) * 100 if funding > 0 else 0
+            
+            with col1:
+                min_percentage_of_funding = st.number_input(
+                    f"Min Percentage of funding for {var}:", 
+                    min_value=0.0, max_value=100.0, 
+                    value=round(min_percentage_of_funding, 1), 
+                    step=0.1, format="%.1f",
+                    key=f"min_percent_{var}"
+                )
+            with col2:
+                max_percentage_of_funding = st.number_input(
+                    f"Max Percentage of funding for {var}:", 
+                    min_value=0.0, max_value=100.0, 
+                    value=round(max_percentage_of_funding, 1), 
+                    step=0.1, format="%.1f",
+                    key=f"max_percent_{var}"
+                )
+                
+
+            # Update payouts based on percentage input
+            min_payout = round((min_percentage_of_funding / 100) * funding)
+            max_payout = round((max_percentage_of_funding / 100) * funding)
+            
+            with col1:
+                min_payout = st.number_input(
+                    f"Minimum payout for {var}:", 
+                    value=min_payout, 
+                    min_value=0, 
+                    step=1000, 
+                    key=f"min_payout_{var}"
+                )
+            with col2:
+                max_payout = st.number_input(
+                    f"Maximum payout for {var}:", 
+                    value=max_payout, 
+                    min_value=0, 
+                    step=1000, 
+                    key=f"max_payout_{var}"
+                )
         
 
         
