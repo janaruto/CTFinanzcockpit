@@ -98,7 +98,7 @@ def main():
     # Display input fields for each selected variable
     for var in selected_premium_variables:
         
-        inputs_premiums[var] = st.number_input(f"Payout per {var}:", value=0)
+        inputs_premiums[var] = st.number_input(f"Payout per {var}:", value=0, step=1000)
         
     st.subheader('Rewards')
             
@@ -117,7 +117,7 @@ def main():
     # Display input fields for each selected variable
     for var in selected_reward_variables:
         
-        inputs_rewards[var] = st.number_input(f"Payout for {var}:", value=0)
+        inputs_rewards[var] = st.number_input(f"Payout for {var}:", value=0, step=1000)
         
     
     ###########################################################################
