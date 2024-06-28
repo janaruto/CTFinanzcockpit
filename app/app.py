@@ -26,7 +26,7 @@ def main():
         label='Amount of funding through Crowdtransfer platform',
         min_value=0,  # minimum value allowed
         max_value=100000000,  # maximum value allowed
-        value=0,  # default value
+        value=100000,  # default value
         step=10000  # step size
     )
     
