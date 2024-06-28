@@ -272,8 +272,11 @@ def main():
         # Add a summary row
         summary_row = pd.DataFrame([['Sum', total_cost]], columns=['Variable', 'Costs'])
         df_costs = pd.concat([df_costs, summary_row], ignore_index=True)
-        df_costs['Percentage of total Funding'] = df_costs.Costs/funding*100
-        df_costs['Percentage of total Funding'] = df_costs['Percentage of total Funding'].round(1)
+        
+        try:
+            df_costs['Percentage of total Funding'] = (df_costs.Costs/funding*100).round(1)
+        except TypeError:
+            df_costs['Percentage of total Funding'] = 0
         
         # Function to format the table with the last row bold
         def make_table_bold(df):
