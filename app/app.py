@@ -133,7 +133,7 @@ def main():
         
         if var == 'Won games in main competition':
             
-            bracket = ['9 Wins - 25%', '18 Wins - 50%', '36 Wins -100%'] 
+            bracket = ['9 Wins - 25%', '18 Wins - 50%', '36 Wins - 100%'] 
     
             # Multiselect for variables
             bracket_selected = st.selectbox(
