@@ -1,6 +1,22 @@
-import streamlit as st
+from fuzzywuzzy import process
+import json
 import pandas as pd
 import re
+import requests
+import streamlit as st
+
+
+
+# Function to fetch data from the API
+def fetch_data(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        st.error(f"Error fetching data: {e}")
+        return None
+
 
 def extract_numbers(input_string):
     # Use regular expression to find the first number and the percentage
@@ -29,6 +45,44 @@ competitions = [comp for comp in competitions if comp != 'UCOL']
 def main():
     st.title('Finanzcockpit')
     
+    api_url = "https://dev.crowdtransfer.io/api/transfers/"
+    
+    goal_raisable_by_fans = 100000
+    club_name_crowdtransfer = 'FC Winterthur'
+    player_position_idx = 0
+    # Button to trigger the API call
+    if st.button("Fetch Data"):
+        data = fetch_data(api_url)
+        data = data['results'][-1]
+        
+        if data:
+            goal_raisable_by_fans_fetched = data['goal_raisable_by_fanbase']
+            if goal_raisable_by_fans_fetched != None:
+                goal_raisable_by_fans = int(goal_raisable_by_fans_fetched)
+            else:
+                pass
+            
+            club_name_crowdtransfer_fetched = data['club']['name']
+            if club_name_crowdtransfer_fetched != None:
+                club_name_crowdtransfer = club_name_crowdtransfer_fetched
+            else:
+                pass
+            
+            player_position_idx_fetched = data['position_type']
+            if player_position_idx_fetched != None:
+                if player_position_idx_fetched == 'DEFENSE':
+                    player_position_idx=1
+                elif player_position_idx_fetched == 'MIDFIELD':
+                    player_position_ixd=2
+                elif player_position_idx_fetched == 'OFFENSE':
+                    player_position_idx=3
+                else:
+                    pass
+                
+            st.text(goal_raisable_by_fans_fetched)
+            st.text(str(club_name_crowdtransfer_fetched))
+            st.text(player_position_idx_fetched)
+        
     # User input features
     
     # Funding
@@ -37,13 +91,14 @@ def main():
         label='Amount of funding through Crowdtransfer platform',
         min_value=0,  # minimum value allowed
         max_value=100000000,  # maximum value allowed
-        value=100000,  # default value
+        value=goal_raisable_by_fans,  # default value
         step=10000  # step size
     )
     
     # Club
     st.subheader('Club')
-    clubname = st.selectbox('Select your Club', df_clubs['ClubName'], format_func=lambda x: x.strip())
+    most_similar_club, similarity_score, index_most_similar_club = process.extractOne(club_name_crowdtransfer, df_clubs['ClubName'])
+    clubname = st.selectbox('Select your Club', df_clubs['ClubName'], format_func=lambda x: x.strip(), index=index_most_similar_club)
     filtered_df = df_clubs[df_clubs.ClubName == clubname]
     filtered_df = filtered_df.reset_index(drop=True)
     mainCompetition = filtered_df.at[0, 'CompetitionID']
@@ -53,7 +108,7 @@ def main():
     st.subheader('Position')
     position = st.selectbox(
     "Which of these options best describes the player's position?",
-    ["Goalkeeper", "Defense", "Midfield", "Attack"]
+    ["Goalkeeper", "Defense", "Midfield", "Attack"], index = player_position_idx
     )
     
     ################################################################################
