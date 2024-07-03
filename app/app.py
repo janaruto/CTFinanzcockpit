@@ -78,7 +78,8 @@ def main():
                     player_position_idx=3
                 else:
                     pass
-                
+            
+            st.text(data['id'])
             st.text(goal_raisable_by_fans_fetched)
             st.text(str(club_name_crowdtransfer_fetched))
             st.text(player_position_idx_fetched)
