@@ -45,7 +45,10 @@ competitions = [comp for comp in competitions if comp != 'UCOL']
 def main():
     st.title('Finanzcockpit')
     
-    api_url = "https://dev.crowdtransfer.io/api/transfers/"
+    crowdtransfer_id = st.number_input("Enter transferid:", min_value=None, max_value=None, value=0, step=1)
+
+    
+    api_url = "https://dev.crowdtransfer.io/api/transfers/{}".format(crowdtransfer_id)
     
     goal_raisable_by_fans = 100000
     club_name_crowdtransfer = 'FC Winterthur'
@@ -53,7 +56,6 @@ def main():
     # Button to trigger the API call
     if st.button("Fetch Data"):
         data = fetch_data(api_url)
-        data = data['results'][-1]
         
         if data:
             goal_raisable_by_fans_fetched = data['goal_raisable_by_fanbase']
@@ -332,6 +334,8 @@ def main():
         
         # Customize the column names
         stats_table_main.columns = ['Goals', 'Assists', 'Scorer Points', 'Minutes Played', 'Appearances']
+        
+        #{'Scored Goals':'Goals', 'Minutes played last season':'Minutes Played'}
         
         # Format the DataFrame
         st.table(stats_table_main.style.format(precision=1))
