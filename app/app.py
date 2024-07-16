@@ -45,7 +45,7 @@ competitions = [comp for comp in competitions if comp != 'UCOL']
 def main():
     st.title('Finanzcockpit')
     
-    crowdtransfer_id = st.number_input("Enter transferid:", min_value=None, max_value=None, value=0, step=1)
+    crowdtransfer_id = st.number_input("Enter transferid:", min_value=None, max_value=None, value=539, step=1)
 
     
     api_url = "https://dev.crowdtransfer.io/api/transfers/{}".format(crowdtransfer_id)
@@ -53,38 +53,85 @@ def main():
     goal_raisable_by_fans = 100000
     club_name_crowdtransfer = 'FC Winterthur'
     player_position_idx = 0
-    # Button to trigger the API call
-    if st.button("Fetch Data"):
-        data = fetch_data(api_url)
+
+    data = fetch_data(api_url)
+    
+
+    goal_raisable_by_fans_fetched = data['goal_raisable_by_fanbase']
+    if goal_raisable_by_fans_fetched != None:
+        goal_raisable_by_fans = int(goal_raisable_by_fans_fetched)
+    else:
+        pass
+    
+    club_name_crowdtransfer_fetched = data['club']['name']
+    if club_name_crowdtransfer_fetched != None:
+        club_name_crowdtransfer = club_name_crowdtransfer_fetched
+    else:
+        pass
+    
+    player_position_idx_fetched = data['position_type']
+    if player_position_idx_fetched != None:
+        if player_position_idx_fetched == 'DEFENSE':
+            player_position_idx=1
+        elif player_position_idx_fetched == 'MIDFIELD':
+            player_position_ixd=2
+        elif player_position_idx_fetched == 'OFFENSE':
+            player_position_idx=3
+        else:
+            pass
         
-        if data:
-            goal_raisable_by_fans_fetched = data['goal_raisable_by_fanbase']
-            if goal_raisable_by_fans_fetched != None:
-                goal_raisable_by_fans = int(goal_raisable_by_fans_fetched)
-            else:
-                pass
-            
-            club_name_crowdtransfer_fetched = data['club']['name']
-            if club_name_crowdtransfer_fetched != None:
-                club_name_crowdtransfer = club_name_crowdtransfer_fetched
-            else:
-                pass
-            
-            player_position_idx_fetched = data['position_type']
-            if player_position_idx_fetched != None:
-                if player_position_idx_fetched == 'DEFENSE':
-                    player_position_idx=1
-                elif player_position_idx_fetched == 'MIDFIELD':
-                    player_position_ixd=2
-                elif player_position_idx_fetched == 'OFFENSE':
-                    player_position_idx=3
-                else:
-                    pass
-            
-            st.text(data['id'])
-            st.text(goal_raisable_by_fans_fetched)
-            st.text(str(club_name_crowdtransfer_fetched))
-            st.text(player_position_idx_fetched)
+        # Assuming 'data' is the variable containing your list of dictionaries
+        premiums = data['premiums']
+
+        # Extract the required information and create a list of dictionaries
+        extracted_data = [
+            {
+                'name': premium['name'],
+                'category': premium['category'],
+                'payout': premium['payout']
+            }
+            for premium in premiums
+        ]
+
+        # Convert the list of dictionaries into a pandas DataFrame
+        df_premiums = pd.DataFrame(extracted_data)
+        df_premiums = df_premiums.drop_duplicates(subset=['name', 'category'], keep='last')
+        try:
+            df_premiums['payout'] = df_premiums['payout'].astype(int)
+        except KeyError:
+            pass
+        
+        # Assuming 'data' is the variable containing your list of dictionaries
+        rewards = data['rewards']
+
+        # Extract the required information and create a list of dictionaries
+        extracted_data = [
+            {
+                'name': reward['name'],
+                'category': reward['category'],
+                'condition_amount_min': reward['reward_entries'][0]['condition_amount'],
+                'condition_amount_max': reward['reward_entries'][1]['condition_amount'],
+                'payout_percent_min': reward['reward_entries'][0]['payout_percent'],
+                'payout_percent_max': reward['reward_entries'][1]['payout_percent']
+            }
+            for reward in rewards
+        ]
+
+        # Convert the list of dictionaries into a pandas DataFrame
+        df_rewards = pd.DataFrame(extracted_data)
+        df_rewards = df_rewards.drop_duplicates(subset=['name', 'category'], keep='last')
+        df_rewards['condition_amount_min'] = df_rewards['condition_amount_min'].astype(int)
+        df_rewards['condition_amount_max'] = df_rewards['condition_amount_max'].astype(int)
+        df_rewards['payout_percent_min'] = df_rewards['payout_percent_min'].astype(float).round(2)
+        df_rewards['payout_percent_max'] = df_rewards['payout_percent_max'].astype(float).round(2)
+        
+        st.text(data['id'])
+        st.text(goal_raisable_by_fans_fetched)
+        st.text(str(club_name_crowdtransfer_fetched))
+        st.text(player_position_idx_fetched)
+        st.text(data['premiums'])
+        st.table(df_premiums)
+        st.table(df_rewards)
         
     # User input features
     
@@ -143,6 +190,7 @@ def main():
         list(quartile_dict.keys())
     )
     
+    
     ################################################################################
     #Premiums
     ################################################################################
@@ -162,11 +210,35 @@ def main():
 
     # Dictionary to store input values for each selected variable
     inputs_premiums = {}
+    
+    # Check if the input from API is empty
+    if df_premiums.empty:
+        pass
+    else:
+        recode_premiums = {'Goals scored - only in league': 'Goal in main competition', 
+                            'Assists made - only in league': 'Assist in main competition', 
+                            'Scorer Points - only in league': 'ScorerPoint in main competition', 
+                            'Games Played - only in league': 'Appearance in main competition', 
+                            'Goals scored - all competitions': 'Goal across all competitions', 
+                            'Assists made - all competitions': 'Assist across all competitions', 
+                            'Scorer Points - all competitions': 'ScorerPoint across all competitions', 
+                            'Games Played - all competitions': 'Appearance across all competitions'}
+        
+        df_premiums['name'] = df_premiums['name'].replace(recode_premiums)
+        
+        for i, r in df_premiums.iterrows():
+            selected_premium_variables.append(r['name'])
+        
+        
 
     # Display input fields for each selected variable
     for var in selected_premium_variables:
-        
-        inputs_premiums[var] = st.number_input(f"Payout per {var}:", value=0, step=1000)
+        if var in df_premiums['name'].values:
+            sub_df = df_premiums[df_premiums['name'] == var]
+            sub_df.reset_index(inplace=True,drop=True)
+            inputs_premiums[var] = st.number_input(f"Payout per {var}:", value=sub_df.at[0,'payout'], step=1000)
+        else:
+            inputs_premiums[var] = st.number_input(f"Payout per {var}:", value=0, step=1000)
         
         
     ################################################################################
@@ -185,6 +257,21 @@ def main():
     
     # Dictionary to store input values for each selected variable
     inputs_rewards = {}
+    
+    ## Check if the input from API is empty
+    #if df_rewards.empty:
+    #    pass
+    #else:
+    #    recode_rewards = {'Minutes played in League': 'Minutes played in main competition', 
+    #                        'Minutes played in total': 'Minutes played across all competitions', 
+    #                        'Scorer Points - only in league': 'Won games in main competition', 
+    #                        'Games Played - only in league': 'Placement in main competition', 
+    #                        'Points in the league at the end of the season': 'Points in main competition'}
+    #    
+    #    df_rewards['name'] = df_rewards['name'].replace(recode_rewards)
+    #    
+    #    for i, r in df_premiums.iterrows():
+    #        selected_reward_variables.append(r['name'])
     
     # Display input fields for each selected variable
     for var in selected_reward_variables:
