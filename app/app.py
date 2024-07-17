@@ -105,17 +105,22 @@ def main():
         rewards = data['rewards']
 
         # Extract the required information and create a list of dictionaries
-        extracted_data = [
-            {
+        extracted_data = []
+        for reward in rewards:
+            reward_entry_min = reward['reward_entries'][0]
+            if len(reward['reward_entries']) > 1:
+                reward_entry_max = reward['reward_entries'][1]
+            else:
+                reward_entry_max = reward_entry_min
+            
+            extracted_data.append({
                 'name': reward['name'],
                 'category': reward['category'],
-                'condition_amount_min': reward['reward_entries'][0]['condition_amount'],
-                'condition_amount_max': reward['reward_entries'][1]['condition_amount'],
-                'payout_percent_min': reward['reward_entries'][0]['payout_percent'],
-                'payout_percent_max': reward['reward_entries'][1]['payout_percent']
-            }
-            for reward in rewards
-        ]
+                'condition_amount_min': reward_entry_min['condition_amount'],
+                'condition_amount_max': reward_entry_max['condition_amount'],
+                'payout_percent_min': reward_entry_min['payout_percent'],
+                'payout_percent_max': reward_entry_max['payout_percent']
+            })
 
         # Convert the list of dictionaries into a pandas DataFrame
         df_rewards = pd.DataFrame(extracted_data)
