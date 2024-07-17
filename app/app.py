@@ -233,9 +233,7 @@ def main():
         
         for i, r in df_premiums.iterrows():
             selected_premium_variables.append(r['name'])
-        
-        
-
+    
     # Display input fields for each selected variable
     for var in selected_premium_variables:
         if var in df_premiums['name'].values:
@@ -252,7 +250,8 @@ def main():
     st.subheader('Rewards')
             
     reward_variables = ['Minutes played in main competition','Minutes played across all competitions',
-                        'Won games in main competition', 'Placement in main competition', 'Points in main competition'] 
+                        'Won games in main competition', 'Placement in main competition', 'Points in main competition',
+                        'Finish Top 3 in League'] 
     
     # Multiselect for variables
     selected_reward_variables = st.multiselect(
@@ -263,106 +262,192 @@ def main():
     # Dictionary to store input values for each selected variable
     inputs_rewards = {}
     
-    ## Check if the input from API is empty
-    #if df_rewards.empty:
-    #    pass
-    #else:
-    #    recode_rewards = {'Minutes played in League': 'Minutes played in main competition', 
-    #                        'Minutes played in total': 'Minutes played across all competitions', 
-    #                        'Scorer Points - only in league': 'Won games in main competition', 
-    #                        'Games Played - only in league': 'Placement in main competition', 
-    #                        'Points in the league at the end of the season': 'Points in main competition'}
-    #    
-    #    df_rewards['name'] = df_rewards['name'].replace(recode_rewards)
-    #    
-    #    for i, r in df_premiums.iterrows():
-    #        selected_reward_variables.append(r['name'])
+    # Check if the input from API is empty
+    if df_rewards.empty:
+        pass
+    else:
+        recode_rewards = {'Minutes played in League': 'Minutes played in main competition', 
+                            'Minutes played in total': 'Minutes played across all competitions', 
+                            'Scorer Points - only in league': 'Won games in main competition', 
+                            'Games Played - only in league': 'Placement in main competition', 
+                            'Points in the league at the end of the season': 'Points in main competition'}
+        
+        df_rewards['name'] = df_rewards['name'].replace(recode_rewards)
+        
+        for i, r in df_rewards.iterrows():
+            selected_reward_variables.append(r['name'])
     
     # Display input fields for each selected variable
     for var in selected_reward_variables:
         
-        if var == 'Won games in main competition':
+        if var in df_rewards['name'].values:
+            sub_df = df_rewards[df_rewards['name'] == var]
+            sub_df.reset_index(inplace=True,drop=True)
+            if var == 'Won games in main competition':
             
-            bracket = ['9 Wins - 25%', '18 Wins - 50%', '36 Wins - 100%'] 
-    
-            # Multiselect for variables
-            bracket_selected = st.selectbox(
-                "Choose the percentage of payout to your fans:",
-                bracket
-            )
-            
-            col1, col2 = st.columns(2)
-
-            # Calculate initial percentage values
-            first_number, percentage_number = extract_numbers(bracket_selected)
-            
-            # store for expected costs table
-            inputs_rewards[var] = percentage_number*funding/100
+                bracket = ['9 Wins - 25%', '18 Wins - 50%', '36 Wins - 100%'] 
         
-            
-            with col1:
-                st.text(
-                    f"Percentage of funding: {str(percentage_number)}"
-                )
-            with col2:
-                st.text(
-                    f"Amount of games which have to be won: {str(first_number)}"
+                # Multiselect for variables
+                bracket_selected = st.selectbox(
+                    "Choose the percentage of payout to your fans:",
+                    bracket
                 )
                 
+                col1, col2 = st.columns(2)
 
+                # Calculate initial percentage values
+                first_number, percentage_number = extract_numbers(bracket_selected)
+                
+                # store for expected costs table
+                inputs_rewards[var] = percentage_number*funding/100
+            
+                
+                with col1:
+                    st.text(
+                        f"Percentage of funding: {str(percentage_number)}"
+                    )
+                with col2:
+                    st.text(
+                        f"Amount of games which have to be won: {str(first_number)}"
+                    )
+                
+            else:
+            
+                # Create columns for min and max payouts
+                col1, col2 = st.columns(2)
+
+                # Calculate initial percentage values
+                min_payout = st.session_state.get(f"min_payout_{var}", 0)
+                max_payout = st.session_state.get(f"max_payout_{var}", 10000)
+                
+                
+                min_percentage_of_funding = sub_df.at[0,'payout_percent_min']
+                max_percentage_of_funding = sub_df.at[0,'payout_percent_max']
+                
+                # store for expected costs table
+                max_payout = round((max_percentage_of_funding / 100) * funding)
+                inputs_rewards[var] = max_payout
+                
+                with col1:
+                    min_percentage_of_funding = st.number_input(
+                        f"Min Percentage of funding for {var}:", 
+                        min_value=0.0, max_value=100.0, 
+                        value=round(min_percentage_of_funding, 1), 
+                        step=0.1, format="%.1f",
+                        key=f"min_percent_{var}"
+                    )
+                with col2:
+                    max_percentage_of_funding = st.number_input(
+                        f"Max Percentage of funding for {var}:", 
+                        min_value=0.0, max_value=100.0, 
+                        value=round(max_percentage_of_funding, 1), 
+                        step=0.1, format="%.1f",
+                        key=f"max_percent_{var}"
+                    )
+                    
+
+                # Update payouts based on percentage input
+                min_payout = round((min_percentage_of_funding / 100) * funding)
+                max_payout = round((max_percentage_of_funding / 100) * funding)
+                
+                with col1:
+                    min_payout = st.number_input(
+                        f"Minimum payout for {var}:", 
+                        value=min_payout, 
+                        min_value=0, 
+                        step=1000, 
+                        key=f"min_payout_{var}"
+                    )
+                with col2:
+                    max_payout = st.number_input(
+                        f"Maximum payout for {var}:", 
+                        value=max_payout, 
+                        min_value=0, 
+                        step=1000, 
+                        key=f"max_payout_{var}"
+                    )
         else:
+            if var == 'Won games in main competition':
+                
+                bracket = ['9 Wins - 25%', '18 Wins - 50%', '36 Wins - 100%'] 
         
-            # Create columns for min and max payouts
-            col1, col2 = st.columns(2)
-
-            # Calculate initial percentage values
-            min_payout = st.session_state.get(f"min_payout_{var}", 0)
-            max_payout = st.session_state.get(f"max_payout_{var}", 10000)
-            
-            # store for expected costs table
-            inputs_rewards[var] = max_payout
-            
-            min_percentage_of_funding = (min_payout / funding) * 100 if funding > 0 else 0
-            max_percentage_of_funding = (max_payout / funding) * 100 if funding > 0 else 0
-            
-            with col1:
-                min_percentage_of_funding = st.number_input(
-                    f"Min Percentage of funding for {var}:", 
-                    min_value=0.0, max_value=100.0, 
-                    value=round(min_percentage_of_funding, 1), 
-                    step=0.1, format="%.1f",
-                    key=f"min_percent_{var}"
-                )
-            with col2:
-                max_percentage_of_funding = st.number_input(
-                    f"Max Percentage of funding for {var}:", 
-                    min_value=0.0, max_value=100.0, 
-                    value=round(max_percentage_of_funding, 1), 
-                    step=0.1, format="%.1f",
-                    key=f"max_percent_{var}"
+                # Multiselect for variables
+                bracket_selected = st.selectbox(
+                    "Choose the percentage of payout to your fans:",
+                    bracket
                 )
                 
+                col1, col2 = st.columns(2)
 
-            # Update payouts based on percentage input
-            min_payout = round((min_percentage_of_funding / 100) * funding)
-            max_payout = round((max_percentage_of_funding / 100) * funding)
+                # Calculate initial percentage values
+                first_number, percentage_number = extract_numbers(bracket_selected)
+                
+                # store for expected costs table
+                inputs_rewards[var] = percentage_number*funding/100
             
-            with col1:
-                min_payout = st.number_input(
-                    f"Minimum payout for {var}:", 
-                    value=min_payout, 
-                    min_value=0, 
-                    step=1000, 
-                    key=f"min_payout_{var}"
-                )
-            with col2:
-                max_payout = st.number_input(
-                    f"Maximum payout for {var}:", 
-                    value=max_payout, 
-                    min_value=0, 
-                    step=1000, 
-                    key=f"max_payout_{var}"
-                )
+                
+                with col1:
+                    st.text(
+                        f"Percentage of funding: {str(percentage_number)}"
+                    )
+                with col2:
+                    st.text(
+                        f"Amount of games which have to be won: {str(first_number)}"
+                    )
+                    
+            else:
+            
+                # Create columns for min and max payouts
+                col1, col2 = st.columns(2)
+
+                # Calculate initial percentage values
+                min_payout = st.session_state.get(f"min_payout_{var}", 0)
+                max_payout = st.session_state.get(f"max_payout_{var}", 10000)
+                
+                # store for expected costs table
+                inputs_rewards[var] = max_payout
+                
+                min_percentage_of_funding = (min_payout / funding) * 100 if funding > 0 else 0
+                max_percentage_of_funding = (max_payout / funding) * 100 if funding > 0 else 0
+                
+                with col1:
+                    min_percentage_of_funding = st.number_input(
+                        f"Min Percentage of funding for {var}:", 
+                        min_value=0.0, max_value=100.0, 
+                        value=round(min_percentage_of_funding, 1), 
+                        step=0.1, format="%.1f",
+                        key=f"min_percent_{var}"
+                    )
+                with col2:
+                    max_percentage_of_funding = st.number_input(
+                        f"Max Percentage of funding for {var}:", 
+                        min_value=0.0, max_value=100.0, 
+                        value=round(max_percentage_of_funding, 1), 
+                        step=0.1, format="%.1f",
+                        key=f"max_percent_{var}"
+                    )
+                    
+
+                # Update payouts based on percentage input
+                min_payout = round((min_percentage_of_funding / 100) * funding)
+                max_payout = round((max_percentage_of_funding / 100) * funding)
+                
+                with col1:
+                    min_payout = st.number_input(
+                        f"Minimum payout for {var}:", 
+                        value=min_payout, 
+                        min_value=0, 
+                        step=1000, 
+                        key=f"min_payout_{var}"
+                    )
+                with col2:
+                    max_payout = st.number_input(
+                        f"Maximum payout for {var}:", 
+                        value=max_payout, 
+                        min_value=0, 
+                        step=1000, 
+                        key=f"max_payout_{var}"
+                    )
         
 
         
@@ -512,6 +597,7 @@ def main():
             
             cost_dictionary[var] = amount
             
+
         # Create a DataFrame from the dictionary
         df_costs = pd.DataFrame(list(cost_dictionary.items()), columns=['Variable', 'Costs'])
 
