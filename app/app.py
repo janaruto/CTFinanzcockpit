@@ -27,6 +27,13 @@ def extract_numbers(input_string):
         return first_number, percentage_number
     else:
         return None, None
+    
+    
+# Iterate through the list with enumeration to get both index and value
+def get_smallest_possible_stat_list_index(values, expected_stat):
+    for index, value in enumerate(values):
+        if value <= expected_stat:
+            return index
 
 # Or, if the image is stored locally
 st.image('data/cd_logo.png')
@@ -74,7 +81,7 @@ def main():
         if player_position_idx_fetched == 'DEFENSE':
             player_position_idx=1
         elif player_position_idx_fetched == 'MIDFIELD':
-            player_position_ixd=2
+            player_position_idx=2
         elif player_position_idx_fetched == 'OFFENSE':
             player_position_idx=3
         else:
@@ -109,32 +116,38 @@ def main():
         for reward in rewards:
             reward_entry_min = reward['reward_entries'][0]
             if len(reward['reward_entries']) > 1:
-                reward_entry_max = reward['reward_entries'][1]
+                # Extracting the condition amounts
+                reward_entries = reward['reward_entries']
+                extracted_data.append({
+                    'name': reward['name'],
+                    'category': reward['category'],
+                    'condition_amount_min': [int(entry['condition_amount']) for entry in reward_entries],
+                    'condition_amount_max': [int(entry['condition_amount']) for entry in reward_entries],
+                    'payout_percent_min': [int(entry['payout_percent']) for entry in reward_entries],
+                    'payout_percent_max': [int(entry['payout_percent']) for entry in reward_entries],
+                    'type': 'list'
+                })
             else:
                 reward_entry_max = reward_entry_min
             
-            extracted_data.append({
-                'name': reward['name'],
-                'category': reward['category'],
-                'condition_amount_min': reward_entry_min['condition_amount'],
-                'condition_amount_max': reward_entry_max['condition_amount'],
-                'payout_percent_min': reward_entry_min['payout_percent'],
-                'payout_percent_max': reward_entry_max['payout_percent']
-            })
+                extracted_data.append({
+                    'name': reward['name'],
+                    'category': reward['category'],
+                    'condition_amount_min': reward_entry_min['condition_amount'],
+                    'condition_amount_max': reward_entry_max['condition_amount'],
+                    'payout_percent_min': reward_entry_min['payout_percent'],
+                    'payout_percent_max': reward_entry_max['payout_percent'],
+                    'type': 'numbers'
+                })
 
         # Convert the list of dictionaries into a pandas DataFrame
         df_rewards = pd.DataFrame(extracted_data)
         df_rewards = df_rewards.drop_duplicates(subset=['name', 'category'], keep='last')
-        df_rewards['condition_amount_min'] = df_rewards['condition_amount_min'].astype(int)
-        df_rewards['condition_amount_max'] = df_rewards['condition_amount_max'].astype(int)
-        df_rewards['payout_percent_min'] = df_rewards['payout_percent_min'].astype(float).round(2)
-        df_rewards['payout_percent_max'] = df_rewards['payout_percent_max'].astype(float).round(2)
         
         st.text(data['id'])
         st.text(goal_raisable_by_fans_fetched)
         st.text(str(club_name_crowdtransfer_fetched))
         st.text(player_position_idx_fetched)
-        st.text(data['premiums'])
         st.table(df_premiums)
         st.table(df_rewards)
         
@@ -247,6 +260,8 @@ def main():
     ################################################################################
     #Rewards
     ################################################################################
+    
+    # rewards kann mehrere brackets haben, dassjengige nehmen welches es erfüllen würde
     st.subheader('Rewards')
             
     reward_variables = ['Minutes played in main competition','Minutes played across all competitions',
@@ -283,89 +298,59 @@ def main():
         if var in df_rewards['name'].values:
             sub_df = df_rewards[df_rewards['name'] == var]
             sub_df.reset_index(inplace=True,drop=True)
-            if var == 'Won games in main competition':
             
-                bracket = ['9 Wins - 25%', '18 Wins - 50%', '36 Wins - 100%'] 
-        
-                # Multiselect for variables
-                bracket_selected = st.selectbox(
-                    "Choose the percentage of payout to your fans:",
-                    bracket
-                )
+            if 'list' == sub_df['type'][0]:
                 
-                col1, col2 = st.columns(2)
+                conditions = sub_df.condition_amount_min[0]
+                percentages = sub_df.payout_percent_min[0]
+                n_cols = len(conditions)
 
-                # Calculate initial percentage values
-                first_number, percentage_number = extract_numbers(bracket_selected)
+                # Use st.columns to create the columns
+                columns = st.columns(n_cols)
                 
-                # store for expected costs table
-                inputs_rewards[var] = percentage_number*funding/100
-            
+                i = 1
                 
-                with col1:
-                    st.text(
-                        f"Percentage of funding: {str(percentage_number)}"
-                    )
-                with col2:
-                    st.text(
-                        f"Amount of games which have to be won: {str(first_number)}"
-                    )
-                
-            else:
-            
-                # Create columns for min and max payouts
-                col1, col2 = st.columns(2)
-
-                # Calculate initial percentage values
-                min_payout = st.session_state.get(f"min_payout_{var}", 0)
-                max_payout = st.session_state.get(f"max_payout_{var}", 10000)
-                
-                
-                min_percentage_of_funding = sub_df.at[0,'payout_percent_min']
-                max_percentage_of_funding = sub_df.at[0,'payout_percent_max']
-                
-                # store for expected costs table
-                max_payout = round((max_percentage_of_funding / 100) * funding)
-                inputs_rewards[var] = max_payout
-                
-                with col1:
-                    min_percentage_of_funding = st.number_input(
-                        f"Min Percentage of funding for {var}:", 
-                        min_value=0.0, max_value=100.0, 
-                        value=round(min_percentage_of_funding, 1), 
-                        step=0.1, format="%.1f",
-                        key=f"min_percent_{var}"
-                    )
-                with col2:
-                    max_percentage_of_funding = st.number_input(
-                        f"Max Percentage of funding for {var}:", 
-                        min_value=0.0, max_value=100.0, 
-                        value=round(max_percentage_of_funding, 1), 
-                        step=0.1, format="%.1f",
-                        key=f"max_percent_{var}"
-                    )
+                while i <= n_cols:
                     
+                    condition = conditions[i-1]
 
-                # Update payouts based on percentage input
-                min_payout = round((min_percentage_of_funding / 100) * funding)
-                max_payout = round((max_percentage_of_funding / 100) * funding)
+                    with columns[i-1]:
+                        
+                        payout = round((percentages[i-1] / 100) * funding)
+                        payout = st.session_state.get(f"payout_{i+1}_{var}", 0)
+
+                        percentage = (payout / funding) * 100 if funding > 0 else 0
+                        
+                        percentage_of_funding = st.number_input(
+                            f"Percentage of funding if {var} > {condition}:", 
+                            min_value=0.0, max_value=100.0, 
+                            value=round(percentage, 1), 
+                            step=0.1, format="%.1f",
+                            key=f"percentage_{i+1}_{var}"
+                        )
+                        
+                        payout_of_funding = st.number_input(
+                            f"Payout if {var} > {condition}:", 
+                            value=payout, 
+                            min_value=0, 
+                            step=1000, 
+                            key=f"payout_{i+1}_{var}"
+                        )
+                        
+                        
+                        percentages[i-1] = percentage_of_funding
+                        sub_df.at[0,'payout_percent_min'] = percentages
+                        
+                        i += 1
+                        
+                # store for expected costs table
+                inputs_rewards[var] = sub_df
+
+            else:
+                pass
+
                 
-                with col1:
-                    min_payout = st.number_input(
-                        f"Minimum payout for {var}:", 
-                        value=min_payout, 
-                        min_value=0, 
-                        step=1000, 
-                        key=f"min_payout_{var}"
-                    )
-                with col2:
-                    max_payout = st.number_input(
-                        f"Maximum payout for {var}:", 
-                        value=max_payout, 
-                        min_value=0, 
-                        step=1000, 
-                        key=f"max_payout_{var}"
-                    )
+                
         else:
             if var == 'Won games in main competition':
                 
@@ -595,7 +580,68 @@ def main():
             
         for var, amount in inputs_rewards.items():
             
-            cost_dictionary[var] = amount
+            if isinstance(amount, pd.DataFrame):
+                
+                st.text(var)
+                conditions_cost = amount.condition_amount_min[0]
+                percentages_cost = amount.payout_percent_min[0]
+                
+                if 'main competition' in var:
+                
+                    if 'Goal' in var:
+                        expected_stat = stats_table_main.at['Stats', 'Goals']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost = round((float(percentages_cost[index]) / 100) * funding)
+                    elif 'Assist' in var:
+                        expected_stat = stats_table_main.at['Stats', 'Assists']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost = round((float(percentages_cost[index])/ 100) * funding)
+                    elif 'Scorer' in var:
+                        expected_stat = stats_table_main.at['Stats', 'Scorer Points']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost = round((float(percentages_cost[index]) / 100) * funding)
+                    elif 'Appearance' in var:
+                        expected_stat = stats_table_main.at['Stats', 'Appearances']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost = round((float(percentages_cost[index]) / 100) * funding)
+                    elif 'Minutes' in var:
+                        expected_stat = stats_table_main.at['Stats', 'Minutes Played']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost = round((float(percentages_cost[index]) / 100) * funding)
+                    else:
+                        cost = amount
+                        
+                    cost_dictionary[var] = cost
+                    
+                elif ('all competition' in var) | ('last season' in var):
+                    
+                    if 'Goal' in var:
+                        expected_stat = stats_table_all.at['Stats', 'Goals']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost = round((float(percentages_cost[index]) / 100) * funding)
+                    elif 'Assist' in var:
+                        expected_stat = stats_table_all.at['Stats', 'Assists']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost = round((float(percentages_cost[index])/ 100) * funding)
+                    elif 'Scorer' in var:
+                        expected_stat = stats_table_all.at['Stats', 'Scorer Points']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost = round((float(percentages_cost[index]) / 100) * funding)
+                    elif 'Appearance' in var:
+                        expected_stat = stats_table_all.at['Stats', 'Appearances']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost = round((float(percentages_cost[index])/ 100) * funding)
+                    elif 'Minutes' in var:
+                        expected_stat = stats_table_main.at['Stats', 'Minutes Played']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost = round((float(percentages_cost[index]) / 100) * funding)
+                    else:
+                        cost = amount
+                        
+                    cost_dictionary[var] = cost
+                
+            else:
+                cost_dictionary[var] = amount
             
 
         # Create a DataFrame from the dictionary
