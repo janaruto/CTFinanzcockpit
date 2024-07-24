@@ -307,42 +307,46 @@ def main():
 
                 # Use st.columns to create the columns
                 columns = st.columns(n_cols)
-                
-                i = 1
-                
-                while i <= n_cols:
+
+                for i in range(n_cols):
+                    condition = conditions[i]
+
+                    key_percentage = f"percentage_{i+1}_{var}"
+                    key_payout = f"payout_{i+1}_{var}"
                     
-                    condition = conditions[i-1]
+                    if key_percentage not in st.session_state:
+                        st.session_state[key_percentage] = percentages[i]
 
-                    with columns[i-1]:
-                        
-                        payout = round((percentages[i-1] / 100) * funding)
-                        payout = st.session_state.get(f"payout_{i+1}_{var}", 0)
+                    if key_payout not in st.session_state:
+                        st.session_state[key_payout] = round((percentages[i] / 100) * funding)
 
-                        percentage = (payout / funding) * 100 if funding > 0 else 0
-                        
-                        percentage_of_funding = st.number_input(
-                            f"Percentage of funding if {var} > {condition}:", 
-                            min_value=0.0, max_value=100.0, 
-                            value=round(percentage, 1), 
+                    with columns[i]:
+                        def update_percentage(key_payout=key_payout, key_percentage=key_percentage):
+                            payout_api = st.session_state[key_payout]
+                            st.session_state[key_percentage] = round((payout_api / funding) * 100, 2)
+
+                        def update_payout(key_payout=key_payout, key_percentage=key_percentage):
+                            percentage = st.session_state[key_percentage]
+                            st.session_state[key_payout] = round((percentage / 100) * funding)
+
+                        st.number_input(
+                            f"Percentage of funding if {var} > {condition}:",
+                            min_value=0.0, max_value=100.0,
+                            value=st.session_state[key_percentage],
                             step=0.1, format="%.1f",
-                            key=f"percentage_{i+1}_{var}"
+                            key=key_percentage,
+                            on_change=update_payout
                         )
-                        
-                        payout_of_funding = st.number_input(
-                            f"Payout if {var} > {condition}:", 
-                            value=payout, 
-                            min_value=0, 
-                            step=1000, 
-                            key=f"payout_{i+1}_{var}"
+
+                        st.number_input(
+                            f"Payout if {var} > {condition}:",
+                            value=st.session_state[key_payout],
+                            min_value=0,
+                            step=1000,
+                            key=key_payout,
+                            on_change=update_percentage
                         )
-                        
-                        
-                        percentages[i-1] = percentage_of_funding
-                        sub_df.at[0,'payout_percent_min'] = percentages
-                        
-                        i += 1
-                        
+                                        
                 # store for expected costs table
                 inputs_rewards[var] = sub_df
 
