@@ -315,7 +315,7 @@ def main():
                     key_payout = f"payout_{i+1}_{var}"
                     
                     if key_percentage not in st.session_state:
-                        st.session_state[key_percentage] = percentages[i]
+                        st.session_state[key_percentage] = float(percentages[i])
 
                     if key_payout not in st.session_state:
                         st.session_state[key_payout] = round((percentages[i] / 100) * funding)
@@ -346,7 +346,8 @@ def main():
                             key=key_payout,
                             on_change=update_percentage
                         )
-                                        
+                        percentages[i] = st.session_state[key_percentage]
+                        sub_df.at[0,'payout_percent_min'] = percentages
                 # store for expected costs table
                 inputs_rewards[var] = sub_df
 
@@ -586,7 +587,6 @@ def main():
             
             if isinstance(amount, pd.DataFrame):
                 
-                st.text(var)
                 conditions_cost = amount.condition_amount_min[0]
                 percentages_cost = amount.payout_percent_min[0]
                 
@@ -610,8 +610,10 @@ def main():
                         cost = round((float(percentages_cost[index]) / 100) * funding)
                     elif 'Minutes' in var:
                         expected_stat = stats_table_main.at['Stats', 'Minutes Played']
+                        st.text(expected_stat)
                         index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
                         cost = round((float(percentages_cost[index]) / 100) * funding)
+                        st.text(cost)
                     else:
                         cost = amount
                         
