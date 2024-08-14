@@ -456,9 +456,11 @@ def main():
         df_StatsMain = df_StatsMain[['PlayerID', 'Season', 'Goals', 'Assists', 'ScorerPoints', 'MinutesPlayed', 'Appearances']].groupby(by=['PlayerID', 'Season']).sum()
         
         # Calculate the mean and round the results
+        df_minMain = df_StatsMain.min().round(1)
         df_meanMain = df_StatsMain.mean().round(1)
+        df_maxMain = df_StatsMain.max().round(1)
         
-        return df_meanMain
+        return df_minMain, df_meanMain, df_maxMain
     
     ###########################################################################
     # ALLStats Function to process the selected option and display the table
@@ -479,9 +481,11 @@ def main():
         df_StatsAll = df_StatsAll[['PlayerID', 'Season', 'Goals', 'Assists', 'ScorerPoints', 'MinutesPlayed', 'Appearances']].groupby(by=['PlayerID', 'Season']).sum()
         
         # Calculate the mean and round the results
+        df_minAll = df_StatsAll.min().round(1)
         df_meanAll = df_StatsAll.mean().round(1)
+        df_maxAll = df_StatsAll.max().round(1)
         
-        return df_meanAll
+        return df_minAll, df_meanAll, df_maxAll
     
 
     # Display the table if an option is selected
@@ -493,11 +497,14 @@ def main():
         #Main
         st.subheader('Main Competition')
         st.write("Statistics per Season for selected market value range across **main competitions**:")
-        stats_table_main = display_player_stats_main_competitions(selected_option,quartile_dict, df_playerstats)
+        stats_table_main_min, stats_table_main_mean, stats_table_main_max = display_player_stats_main_competitions(selected_option,quartile_dict, df_playerstats)
         
         # Rename the index for display
-        stats_table_main = stats_table_main.to_frame().T
-        stats_table_main.index = ['Stats']
+        stats_table_main_min = stats_table_main_min.to_frame().T
+        stats_table_main_mean = stats_table_main_mean.to_frame().T
+        stats_table_main_max = stats_table_main_max.to_frame().T
+        stats_table_main = pd.concat([stats_table_main_min, stats_table_main_mean, stats_table_main_max])
+        stats_table_main.index = ['Min', 'Mean', 'Max']
         
         # Customize the column names
         stats_table_main.columns = ['Goals', 'Assists', 'Scorer Points', 'Minutes Played', 'Appearances']
@@ -511,11 +518,14 @@ def main():
         #All
         st.subheader('All Competitions')
         st.write("Statistics per Season for selected market value range across **all club competitions** (national league, cups, european cups, no data from national competitions):")
-        stats_table_all = display_player_stats_all_competitions(selected_option,quartile_dict, df_playerstats, competitions)
+        stats_table_all_min, stats_table_all_mean, stats_table_all_max = display_player_stats_all_competitions(selected_option,quartile_dict, df_playerstats, competitions)
         
         # Rename the index for display
-        stats_table_all = stats_table_all.to_frame().T
-        stats_table_all.index = ['Stats']
+        stats_table_all_min = stats_table_all_min.to_frame().T
+        stats_table_all_mean = stats_table_all_mean.to_frame().T
+        stats_table_all_max = stats_table_all_max.to_frame().T
+        stats_table_all = pd.concat([stats_table_all_min, stats_table_all_mean, stats_table_all_max])
+        stats_table_all.index = ['Min', 'Mean', 'Max']
         
         # Customize the column names
         stats_table_all.columns = ['Goals', 'Assists', 'Scorer Points', 'Minutes Played', 'Appearances']
@@ -545,43 +555,82 @@ def main():
             if 'main competition' in var:
                 
                 if 'Goal' in var:
-                    multiplicator = stats_table_main.at['Stats', 'Goals']
-                    cost = multiplicator * amount
+                    multiplicator = stats_table_main.at['Min', 'Goals']
+                    cost_min = multiplicator * amount
+                    multiplicator = stats_table_main.at['Mean', 'Goals']
+                    cost_mean = multiplicator * amount
+                    multiplicator = stats_table_main.at['Max', 'Goals']
+                    cost_max = multiplicator * amount
+                    costs = [cost_min, cost_mean, cost_max]
                 elif 'Assist' in var:
-                    multiplicator = stats_table_main.at['Stats', 'Assists']
-                    cost = multiplicator * amount
+                    multiplicator = stats_table_main.at['Min', 'Assists']
+                    cost_min = multiplicator * amount
+                    multiplicator = stats_table_main.at['Mean', 'Assists']
+                    cost_mean = multiplicator * amount
+                    multiplicator = stats_table_main.at['Max', 'Assists']
+                    cost_max = multiplicator * amount
+                    costs = [cost_min, cost_mean, cost_max]
                 elif 'Scorer' in var:
-                    multiplicator = stats_table_main.at['Stats', 'Scorer Points']
-                    cost = multiplicator * amount
+                    multiplicator = stats_table_main.at['Min', 'Scorer Points']
+                    cost_min = multiplicator * amount
+                    multiplicator = stats_table_main.at['Mean', 'Scorer Points']
+                    cost_mean = multiplicator * amount
+                    multiplicator = stats_table_main.at['Max', 'Scorer Points']
+                    cost_max = multiplicator * amount
+                    costs = [cost_min, cost_mean, cost_max]
                 elif 'Appearance' in var:
-                    multiplicator = stats_table_main.at['Stats', 'Appearances']
-                    cost = multiplicator * amount
+                    multiplicator = stats_table_main.at['Min', 'Appearances']
+                    cost_min = multiplicator * amount
+                    multiplicator = stats_table_main.at['Mean', 'Appearances']
+                    cost_mean = multiplicator * amount
+                    multiplicator = stats_table_main.at['Max', 'Appearances']
+                    cost_max = multiplicator * amount
+                    costs = [cost_min, cost_mean, cost_max]
                 else:
-                    cost = amount
+                    costs = [0, amount, amount]
                     
                 
             elif 'all competition' in var:
                 
                 if 'Goal' in var:
-                    multiplicator = stats_table_all.at['Stats', 'Goals']
-                    cost = multiplicator * amount
+                    multiplicator = stats_table_all.at['Min', 'Goals']
+                    cost_min = multiplicator * amount
+                    multiplicator = stats_table_all.at['Mean', 'Goals']
+                    cost_mean = multiplicator * amount
+                    multiplicator = stats_table_all.at['Max', 'Goals']
+                    cost_max = multiplicator * amount
+                    costs = [cost_min, cost_mean, cost_max]
                 elif 'Assist' in var:
-                    multiplicator = stats_table_all.at['Stats', 'Assists']
-                    cost = multiplicator * amount
+                    multiplicator = stats_table_all.at['Min', 'Assists']
+                    cost_min = multiplicator * amount
+                    multiplicator = stats_table_all.at['Mean', 'Assists']
+                    cost_mean = multiplicator * amount
+                    multiplicator = stats_table_all.at['Max', 'Assists']
+                    cost_max = multiplicator * amount
+                    costs = [cost_min, cost_mean, cost_max]
                 elif 'Scorer' in var:
-                    multiplicator = stats_table_all.at['Stats', 'Scorer Points']
-                    cost = multiplicator * amount
+                    multiplicator = stats_table_all.at['Min', 'Scorer Points']
+                    cost_min = multiplicator * amount
+                    multiplicator = stats_table_all.at['Mean', 'Scorer Points']
+                    cost_mean = multiplicator * amount
+                    multiplicator = stats_table_all.at['Max', 'Scorer Points']
+                    cost_max = multiplicator * amount
+                    costs = [cost_min, cost_mean, cost_max]
                 elif 'Appearance' in var:
-                    multiplicator = stats_table_all.at['Stats', 'Appearances']
-                    cost = multiplicator * amount
+                    multiplicator = stats_table_all.at['Min', 'Appearances']
+                    cost_min = multiplicator * amount
+                    multiplicator = stats_table_all.at['Mean', 'Appearances']
+                    cost_mean = multiplicator * amount
+                    multiplicator = stats_table_all.at['Max', 'Appearances']
+                    cost_max = multiplicator * amount
+                    costs = [cost_min, cost_mean, cost_max]
                 else:
-                    cost = amount
+                    costs = [0, amount, amount]
                     
             else:
+                costs = [0, amount, amount]
                 
-                cost = amount
-                
-            cost_dictionary[var] = cost
+            cost_dictionary[var] = costs
         
         
         for var, amount in inputs_rewards.items():
@@ -595,81 +644,163 @@ def main():
                 if 'main competition' in var:
                 
                     if 'Goal' in var:
-                        expected_stat = stats_table_main.at['Stats', 'Goals']
+                        expected_stat = stats_table_main.at['Min', 'Goals']
                         index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
-                        cost = round((float(percentages_cost[index]) / 100) * funding)
+                        cost_min = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_main.at['Mean', 'Goals']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_mean = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_main.at['Max', 'Goals']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_max = round((float(percentages_cost[index]) / 100) * funding)
+                        costs = [cost_min, cost_mean, cost_max]
                     elif 'Assist' in var:
-                        expected_stat = stats_table_main.at['Stats', 'Assists']
+                        expected_stat = stats_table_main.at['Min', 'Assists']
                         index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
-                        cost = round((float(percentages_cost[index])/ 100) * funding)
+                        cost_min = round((float(percentages_cost[index])/ 100) * funding)
+                        expected_stat = stats_table_main.at['Mean', 'Assists']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_mean = round((float(percentages_cost[index])/ 100) * funding)
+                        expected_stat = stats_table_main.at['Max', 'Assists']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_max = round((float(percentages_cost[index])/ 100) * funding)
+                        costs = [cost_min, cost_mean, cost_max]
                     elif 'Scorer' in var:
-                        expected_stat = stats_table_main.at['Stats', 'Scorer Points']
+                        expected_stat = stats_table_main.at['Min', 'Scorer Points']
                         index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
-                        cost = round((float(percentages_cost[index]) / 100) * funding)
+                        cost_min = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_main.at['Mean', 'Scorer Points']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_mean = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_main.at['Max', 'Scorer Points']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_max = round((float(percentages_cost[index]) / 100) * funding)
+                        costs = [cost_min, cost_mean, cost_max]
                     elif 'Appearance' in var:
-                        expected_stat = stats_table_main.at['Stats', 'Appearances']
+                        expected_stat = stats_table_main.at['Min', 'Appearances']
                         index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
-                        cost = round((float(percentages_cost[index]) / 100) * funding)
+                        cost_min = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_main.at['Mean', 'Appearances']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_mean = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_main.at['Max', 'Appearances']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_max = round((float(percentages_cost[index]) / 100) * funding)
+                        costs = [cost_min, cost_mean, cost_max]
                     elif 'Minutes' in var:
-                        expected_stat = stats_table_main.at['Stats', 'Minutes Played']
-                        st.text(expected_stat)
+                        expected_stat = stats_table_main.at['Min', 'Minutes Played']
                         index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
-                        cost = round((float(percentages_cost[index]) / 100) * funding)
-                        st.text(cost)
+                        cost_min = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_main.at['Mean', 'Minutes Played']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_mean = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_main.at['Max', 'Minutes Played']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_max = round((float(percentages_cost[index]) / 100) * funding)
+                        costs = [cost_min, cost_mean, cost_max]
                     elif 'Points in main competition' in var:
                         cost = round((float(percentages_cost[1]) / 100) * funding)
+                        costs = [0, cost, cost]
                     else:
-                        cost = amount
+                        costs = [0, amount, amount]
                         
-                    cost_dictionary[var] = cost
+                    cost_dictionary[var] = costs
                     
                 elif ('all competition' in var) | ('last season' in var):
                     
                     if 'Goal' in var:
-                        expected_stat = stats_table_all.at['Stats', 'Goals']
+                        expected_stat = stats_table_all.at['Min', 'Goals']
                         index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
-                        cost = round((float(percentages_cost[index]) / 100) * funding)
+                        cost_min = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_all.at['Mean', 'Goals']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_mean = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_all.at['Max', 'Goals']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_max = round((float(percentages_cost[index]) / 100) * funding)
+                        costs = [cost_min, cost_mean, cost_max]
                     elif 'Assist' in var:
-                        expected_stat = stats_table_all.at['Stats', 'Assists']
+                        expected_stat = stats_table_all.at['Min', 'Assists']
                         index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
-                        cost = round((float(percentages_cost[index])/ 100) * funding)
+                        cost_min = round((float(percentages_cost[index])/ 100) * funding)
+                        expected_stat = stats_table_all.at['Mean', 'Assists']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_mean = round((float(percentages_cost[index])/ 100) * funding)
+                        expected_stat = stats_table_all.at['Max', 'Assists']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_max = round((float(percentages_cost[index]) / 100) * funding)
+                        costs = [cost_min, cost_mean, cost_max]
                     elif 'Scorer' in var:
-                        expected_stat = stats_table_all.at['Stats', 'Scorer Points']
+                        expected_stat = stats_table_all.at['Min', 'Scorer Points']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_min = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_all.at['Mean', 'Scorer Points']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_mean = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_all.at['Max', 'Scorer Points']
                         index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
                         cost = round((float(percentages_cost[index]) / 100) * funding)
                     elif 'Appearance' in var:
-                        expected_stat = stats_table_all.at['Stats', 'Appearances']
+                        expected_stat = stats_table_all.at['Min', 'Appearances']
                         index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
-                        cost = round((float(percentages_cost[index])/ 100) * funding)
+                        cost_min = round((float(percentages_cost[index])/ 100) * funding)
+                        expected_stat = stats_table_all.at['Mean', 'Appearances']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_mean = round((float(percentages_cost[index])/ 100) * funding)
+                        expected_stat = stats_table_all.at['Max', 'Appearances']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_max = round((float(percentages_cost[index]) / 100) * funding)
+                        costs = [cost_min, cost_mean, cost_max]
                     elif 'Minutes' in var:
-                        expected_stat = stats_table_main.at['Stats', 'Minutes Played']
+                        expected_stat = stats_table_main.at['Min', 'Minutes Played']
                         index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
-                        cost = round((float(percentages_cost[index]) / 100) * funding)
+                        cost_min = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_main.at['Mean', 'Minutes Played']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_mean = round((float(percentages_cost[index]) / 100) * funding)
+                        expected_stat = stats_table_main.at['Max', 'Minutes Played']
+                        index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
+                        cost_max = round((float(percentages_cost[index]) / 100) * funding)
+                        costs = [cost_min, cost_mean, cost_max]
                     elif 'Position in League last season' in var:
                         cost = round((float(percentages_cost[1]) / 100) * funding)
+                        costs = [0, cost, cost]
                     else:
-                        cost = amount
+                        cost = [0, amount, amount]
                         
-                    cost_dictionary[var] = cost
+                    cost_dictionary[var] = costs
                 
             else:
-                cost_dictionary[var] = amount
+                cost_dictionary[var] = [0, amount, amount]
             
 
         # Create a DataFrame from the dictionary
-        df_costs = pd.DataFrame(list(cost_dictionary.items()), columns=['Variable', 'Costs'])
-
+        df_costs = pd.DataFrame.from_dict(cost_dictionary, orient='index', columns=['Min Costs', 'Expected Costs', 'Max Costs'])
+        df_costs = df_costs.reset_index().rename(columns={'index': 'Variable'})
+        
         # Calculate the sum of the 'Costs' column
-        total_cost = df_costs['Costs'].sum()
+        total_cost_min = df_costs['Min Costs'].sum()
+        total_cost_mean = df_costs['Expected Costs'].sum()
+        total_cost_max = df_costs['Max Costs'].sum()
 
         # Add a summary row
-        summary_row = pd.DataFrame([['Sum', total_cost]], columns=['Variable', 'Costs'])
+        summary_row = pd.DataFrame([['Sum', total_cost_min, total_cost_mean, total_cost_max]], columns=['Variable', 'Min Costs', 'Expected Costs', 'Max Costs'])
         df_costs = pd.concat([df_costs, summary_row], ignore_index=True)
         
         try:
-            df_costs['Percentage of total Funding'] = (df_costs.Costs/funding*100).round(1)
+            df_costs['Percentage of total Min Funding'] = (df_costs['Min Costs']/funding*100).round(1)
         except TypeError:
-            df_costs['Percentage of total Funding'] = 0
+            df_costs['Percentage of total Min Funding'] = 0
+        try:
+            df_costs['Percentage of total Expected Funding'] = (df_costs['Expected Costs']/funding*100).round(1)
+        except TypeError:
+            df_costs['Percentage of total Expected Funding'] = 0
+        try:
+            df_costs['Percentage of total Max Funding'] = (df_costs['Max Costs']/funding*100).round(1)
+        except TypeError:
+            df_costs['Percentage of total Max Funding'] = 0
+            
+        df_costs =df_costs[['Variable', 'Min Costs', 'Percentage of total Min Funding', 'Expected Costs', 'Percentage of total Expected Funding', 'Max Costs', 'Percentage of total Max Funding']]
         
         # Function to format the table with the last row bold
         def make_table_bold(df):
