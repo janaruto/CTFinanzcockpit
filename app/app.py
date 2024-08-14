@@ -582,9 +582,11 @@ def main():
                 cost = amount
                 
             cost_dictionary[var] = cost
-            
+        
+        
         for var, amount in inputs_rewards.items():
             
+
             if isinstance(amount, pd.DataFrame):
                 
                 conditions_cost = amount.condition_amount_min[0]
@@ -614,6 +616,8 @@ def main():
                         index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
                         cost = round((float(percentages_cost[index]) / 100) * funding)
                         st.text(cost)
+                    elif 'Points in main competition' in var:
+                        cost = round((float(percentages_cost[1]) / 100) * funding)
                     else:
                         cost = amount
                         
@@ -641,6 +645,8 @@ def main():
                         expected_stat = stats_table_main.at['Stats', 'Minutes Played']
                         index = get_smallest_possible_stat_list_index(conditions_cost, expected_stat)
                         cost = round((float(percentages_cost[index]) / 100) * funding)
+                    elif 'Position in League last season' in var:
+                        cost = round((float(percentages_cost[1]) / 100) * funding)
                     else:
                         cost = amount
                         
