@@ -4,15 +4,20 @@ import re
 import requests
 import streamlit as st
 
-# Define the custom CSS to make the sidebar wider
-custom_css = """
+st.set_page_config(layout="wide")
+
+# Inject custom CSS to set the width of the sidebar
+st.markdown(
+    """
     <style>
-        /* Increase the sidebar width */
-        .css-1d391kg {
-            width: 1200px;  /* Adjust this value as needed */
+        section[data-testid="stSidebar"] {
+            width: 800px !important; # Set the width to your desired value
         }
     </style>
-"""
+    """,
+    unsafe_allow_html=True,
+)
+
 
 
 def extract_numbers(input_string):
@@ -52,26 +57,25 @@ def main():
     st.title('Finanzcockpit')
         
     # User input features
-    col_min_club, col_max_pos = st.columns(2)
+    col_min, col_max, col_pos, col_club  = st.columns(4)
     
-    with col_min_club :
-        
+    with col_min:
         # Min Funding
         funding_min = st.number_input(label='Mnimal amount of funding through Crowdtransfer',min_value=0,max_value=100000000,value=0,step=100000)
-        # Club
+    with col_max:
+        # Max Funding
+        funding_max = st.number_input(label='Maximum amount of funding through Crowdtransfer',min_value=0,max_value=100000000,value=0,step=100000)
+    with col_pos:
+        # Position
+        position = st.selectbox("Which of these options best describes your funding?",["Goalkeeper", "Defense", "Midfield", "Attack", "Team"], index = 0)
+    with col_club:
         clubname = st.selectbox('Select your Club', df_clubs['ClubName'], format_func=lambda x: x.strip(), index=0)
     
     filtered_df = df_clubs[df_clubs.ClubName == clubname]
     filtered_df = filtered_df.reset_index(drop=True)
     mainCompetition = filtered_df.at[0, 'CompetitionID']
     clubID = filtered_df.at[0, 'ClubID']
-    
-    with col_max_pos :
         
-        # Max Funding
-        funding_max = st.number_input(label='Maximum amount of funding through Crowdtransfer',min_value=0,max_value=100000000,value=0,step=100000)
-        # Position
-        position = st.selectbox("Which of these options best describes your funding?",["Goalkeeper", "Defense", "Midfield", "Attack", "Team"], index = 0)
         
     ################################################################################
     #Market Value
@@ -111,109 +115,66 @@ def main():
     # Backers & Social Perks
     ###########################################################################
     
-    # Create three columns
-    col_socialperks, col_backers = st.columns(2)
+    # Define the column headers
+    header_socialperks = ["Projected number of backers", "Funding Amount", "Internal costs"]
     
-    with col_socialperks:
-    
-        # Define the column headers
-        header_socialperks = ["Funding Amount", "Internal costs"]
+    # Initialize the session state to store the DataFrame
+    if 'df_socialperks' not in st.session_state:
+        # Initialize an empty DataFrame with these MultiIndex columns
+        st.session_state.df_socialperks = pd.DataFrame(columns=header_socialperks)
+        st.session_state.df_socialperks = st.session_state.df_socialperks.rename_axis("Label")
         
-        # Initialize the session state to store the DataFrame
-        if 'df_socialperks' not in st.session_state:
-            # Initialize an empty DataFrame with these MultiIndex columns
-            st.session_state.df_socialperks = pd.DataFrame(columns=header_socialperks)
-            st.session_state.df_socialperks = st.session_state.df_socialperks.rename_axis("Label")
-            
-        st.subheader("Social Perks")
+    st.subheader("Bakers & Social Perks")
+    
+    
+    # Create two columns
+    col_label_social, col_backers, col_funding, col_internalcost = st.columns(4)
+    
+    with col_label_social:
         label_socialperks = st.text_input("Enter label for social perk")
-        
-        # Create two columns
-        col_funding, col_internalcost = st.columns(2)
-        
-        with col_funding:
-            funding_amount_min = st.number_input("Min. funding Amount", min_value=0, step=1)
-        with col_internalcost:
-            internal_costs = st.number_input("Internal Costs", min_value=0, step=1)
-        
-        # Create two columns
-        col_funding_button, col_internalcost_button = st.columns(2)
-        
-        with col_funding_button:
-            # Button to add the row
-            if st.button("Add row social perks"):
-                
-                # Add the new row to the DataFrame stored in session state
-                new_row_socialperks = pd.DataFrame([[funding_amount_min, internal_costs]], columns=header_socialperks, index=[label_socialperks])
-                
-                st.session_state.df_socialperks = pd.concat([st.session_state.df_socialperks, new_row_socialperks])
-                st.session_state.df_socialperks = st.session_state.df_socialperks.rename_axis("Label")
-                st.success("Row added!")
-        with col_internalcost_button:
-            #Add a reset button to clear the DataFrame
-            if st.button("Reset table social perks"):
-
-                # Create a MultiIndex for the columns
-                st.session_state.df_socialperks = pd.DataFrame(columns=header_socialperks)
-                st.session_state.df_socialperks =  st.session_state.df_socialperks.rename_axis("Label")
-                st.success("Table reset!")
-            
-        # Display the DataFrame
-        st.write(st.session_state.df_socialperks)
-        
     with col_backers:
-        
-        # Define the column headers
-        header_backer = ["Who invest more than"]
-        
-        # Initialize the session state to store the DataFrame
-        if 'df_backers' not in st.session_state:
-            # Initialize an empty DataFrame with these MultiIndex columns
-            st.session_state.df_backers = pd.DataFrame(columns=header_backer)
-            st.session_state.df_backers = st.session_state.df_backers.rename_axis("Project number of backers")
+        n_backers = st.number_input("Number of backers", min_value=0, step=1)
+    with col_funding:
+        funding_amount_min = st.number_input("Min. funding Amount", min_value=0, step=1)
+    with col_internalcost:
+        internal_costs = st.number_input("Internal Costs", min_value=0, step=1)
+    
+    # Create two columns
+    col_funding_button, col_internalcost_button, col_empty = st.columns(3)
+    
+    with col_funding_button:
+        # Button to add the row
+        if st.button("Add row bakers & social perks"):
             
-        # Input fields for a new row
-        st.subheader("Backers")
-        
-        col_backers, col_invest= st.columns(2)
-        
-        with col_backers:
-            n_backers = st.number_input("Number of backers", min_value=0, step=1)
-        with col_invest:
-            invest_more = st.number_input("Invest more than", min_value=0, step=1)
-        
-        col_backers_button, col_invest_button = st.columns(2)
-        
-        with col_backers_button:
-            # Button to add the row
-            if st.button("Add row backers"):
-                
-                # Add the new row to the DataFrame stored in session state
-                new_row_backer = pd.DataFrame([[invest_more]], columns=header_backer, index=[n_backers])
-                
-                st.session_state.df_backers = pd.concat([st.session_state.df_backers, new_row_backer])
-                st.session_state.df_backers = st.session_state.df_backers.rename_axis("Project number of backers")
-                st.success("Row added!")
-        
-        with col_invest_button:
-            #Add a reset button to clear the DataFrame
-            if st.button("Reset table backers"):
+            # Add the new row to the DataFrame stored in session state
+            new_row_socialperks = pd.DataFrame([[n_backers, funding_amount_min, internal_costs]], columns=header_socialperks, index=[label_socialperks])
+            
+            st.session_state.df_socialperks = pd.concat([st.session_state.df_socialperks, new_row_socialperks])
+            st.session_state.df_socialperks = st.session_state.df_socialperks.rename_axis("Label")
+            st.success("Row added!")
+    with col_internalcost_button:
+        #Add a reset button to clear the DataFrame
+        if st.button("Reset table bakers & social perks"):
 
-                # Create a MultiIndex for the columns
-                st.session_state.df_backers = pd.DataFrame(columns=header_backer)
-                st.session_state.df_backers = st.session_state.df_backers.rename_axis("Project number of backers")
-                st.success("Table reset!")
+            # Create a MultiIndex for the columns
+            st.session_state.df_socialperks = pd.DataFrame(columns=header_socialperks)
+            st.session_state.df_socialperks =  st.session_state.df_socialperks.rename_axis("Label")
+            st.success("Table reset!")
             
-        # Display the DataFrame
-        st.write(st.session_state.df_backers)
+    with col_empty:
+        pass
+        
+    # Display the DataFrame
+    st.write(st.session_state.df_socialperks)
+    
 
         
     ###########################################################################
-    # Occurence & Costs
+    # Occurence & Costs & Revenue
     ###########################################################################
     
     # Define the column headers
-    header = ["$ per Event", "Occurence Min.", "Occurence Exp.", "Occurence Max.", "Costs Min.", "Costs Exp.", "Costs Max."]
+    header = ["$ per Event", "Occurence Min.", "Occurence Exp.", "Occurence Max.", "Costs Min.", "Costs Exp.", "Costs Max.", "Revenue Min.", "Revenue Exp.", "Revenue Max."]
     
     # Initialize the session state to store the DataFrame
     if 'df_occurence_costs' not in st.session_state:
@@ -231,7 +192,7 @@ def main():
         label = st.text_input("Enter label for reward/premium")
     with col_apyout_mechanism:
         payout_mechanism = st.checkbox("If checked, this row will be treated as a payout per event feature")
-    
+
     # Create three columns
     col_occ_cost1, col_occ_cost2, col_occ_cost3 = st.columns(3)
 
@@ -239,15 +200,18 @@ def main():
     with col_occ_cost1:
         occurrence_min = st.number_input("Min occurrence", min_value=0.0, step=1.0)
         costs_min = st.number_input("Min costs:", min_value=0.0, step=1000.0)
+        rev_min = st.number_input("Min revenue:", min_value=0.0, step=1000.0)
     with col_occ_cost2:
         occurrence_expected = st.number_input("Expected occurrence", min_value=0.0, step=1.0)
         costs_expected = st.number_input("Expected costs", min_value=0.0, step=1000.0)
+        rev_expected = st.number_input("Expected revenue", min_value=0.0, step=1000.0)
     with col_occ_cost3:
         occurrence_max = st.number_input("Max occurrence", min_value=0.0, step=1.0)
         costs_max = st.number_input("Max costs", min_value=0.0, step=1000.0)
+        rev_max = st.number_input("Max revenue", min_value=0.0, step=1000.0)
     
     # Create three columns
-    col_occ_cost1_button, col_occ_cost2_button = st.columns(2)
+    col_occ_cost1_button, col_occ_cost2_button, col_occ_cost_col_empty = st.columns(3)
     
     with col_occ_cost1_button:
         # Button to add the row
@@ -265,7 +229,7 @@ def main():
                 new_row = pd.DataFrame([[
                     payout_mechanism_str, 
                     occurrence_min, occurrence_expected, occurrence_max, 
-                    costs_min, costs_expected, costs_max
+                    costs_min, costs_expected, costs_max, rev_min, rev_expected, rev_max,
                 ]], columns=header, index=[label])
                 
                 st.session_state.df_occurence_costs = pd.concat([st.session_state.df_occurence_costs, new_row])
@@ -280,9 +244,12 @@ def main():
             st.session_state.df_occurence_costs = pd.DataFrame(columns=header)
             st.session_state.df_occurence_costs = st.session_state.df_occurence_costs.rename_axis("Label")
             st.success("Table reset!")
+            
+    with col_occ_cost_col_empty:
+        pass
         
     # Display the DataFrame
-    st.write(st.session_state.df_occurence_costs)
+    st.dataframe(st.session_state.df_occurence_costs) 
 
         
     
@@ -338,7 +305,7 @@ def main():
 
                 if position != 'Team':
                     
-                    st.table(df_Stats.describe().round(1).applymap(lambda x: f"{x:.1f}"))
+                    st.dataframe(df_Stats.describe().round(1).applymap(lambda x: f"{x:.1f}"))
                 
                     column = st.sidebar.selectbox('Choose a column for detailed insights:', df_Stats.columns)
                     # Check if the column selection is valid
@@ -392,7 +359,7 @@ def main():
                         
                 else:
                     df_Stats = df_Stats.sort_values(by=['Season', 'CompetitionID'], ascending=False)
-                    st.table(df_Stats.set_index(['CompetitionID', 'Season']))
+                    st.dataframe(df_Stats.set_index(['CompetitionID', 'Season']))
                     
                     df_league_filtered = df_league[df_league.ClubID == clubID]
                     df_league_filtered = df_league_filtered[['CompetitionID','Season', 'Placement', 'Games', 'W', 'D', 'L', 'Pts']].sort_values(by='Season', ascending=False)
@@ -402,8 +369,8 @@ def main():
                     #df_attendance_filtered = df_attendance[df_attendance.CompetitionID == mainCompetition]
                     #df_attendance_filtered = df_attendance_filtered[df_attendance_filtered['Home Team'] == clubname]
                     st.header("Club performance in main competition")
-                    st.table(df_league_filtered)
-                    #st.table(df_attendance_filtered)
+                    st.dataframe(df_league_filtered)
+                    #st.dataframe(df_attendance_filtered)
                     
 
 
@@ -416,13 +383,76 @@ def main():
                 #df_attendance_filtered = df_attendance[df_attendance.CompetitionID == mainCompetition]
                 #df_attendance_filtered = df_attendance_filtered[df_attendance_filtered['Home Team'] == clubname]
                 st.header("Club performance in main competition")
-                st.table(df_league_filtered)
-                #st.table(df_attendance_filtered)
+                st.dataframe(df_league_filtered)
+                #st.dataframe(df_attendance_filtered)
                 
             else:
                 pass
             
             
+    ###########################################################################
+    # Cost table
+    ###########################################################################
+    
+    # Define the headers and index
+    headers_cost_summary = ["Cost worst performance", "Cost expected performance", "Cost best performance"]
+    index_cost_summary = ["Raised Capital", "Revenues from Performance", "Costs Social Perks", "Repayment Fans", "Total Cashflow"]
+    
+    # Initialize the session state to store the DataFrame
+    if 'df_cost_summary' not in st.session_state:
+        # Initialize an empty DataFrame with these MultiIndex columns
+        st.session_state.df_cost_summary = pd.DataFrame(index=index_cost_summary, columns=headers_cost_summary)
+        st.session_state.df_cost_summary = st.session_state.df_cost_summary.rename_axis("Label")
+    
+    raised_capital_min, raised_capital_exp, raised_capital_max = funding_max, funding_max, funding_max
+    repayment_perf_min, repayment_perf_exp, repayment_perf_max = 0, 0, 0
+    revenue_perf_min, revenue_perf_exp, revenue_perf_max = 0, 0, 0
+    
+    for i, r in st.session_state.df_occurence_costs.iterrows():
         
+        if r['$ per Event'] == 'Yes':
+            repayment_perf_min += r['Occurence Min.'] * r['Costs Min.']
+            repayment_perf_exp += r['Occurence Exp.'] * r['Costs Exp.']
+            repayment_perf_max += r['Occurence Max.'] * r['Costs Max.']
+            revenue_perf_min += r['Occurence Min.'] * r['Revenue Min.']
+            revenue_perf_exp += r['Occurence Exp.'] * r['Revenue Exp.']
+            revenue_perf_max += r['Occurence Max.'] * r['Revenue Max.']
+        else:
+            repayment_perf_min += r['Costs Min.']
+            repayment_perf_exp += r['Costs Exp.']
+            repayment_perf_max += r['Costs Max.']
+            revenue_perf_min += r['Costs Min.']
+            revenue_perf_exp += r['Costs Exp.']
+            revenue_perf_max += r['Costs Max.']
+            
+    cost_social_perks = 0
+            
+    for i, r in st.session_state.df_socialperks.iterrows():
+            
+        cost_social_perks += r['Projected number of backers'] * r['Internal costs']
+        
+    st.session_state.df_cost_summary.at["Raised Capital", "Cost worst performance"] = raised_capital_min
+    st.session_state.df_cost_summary.at["Raised Capital", "Cost expected performance"] = raised_capital_exp
+    st.session_state.df_cost_summary.at["Raised Capital", "Cost best performance"] = raised_capital_max
+    
+    st.session_state.df_cost_summary.at["Revenues from Performance", "Cost worst performance"] = revenue_perf_min
+    st.session_state.df_cost_summary.at["Revenues from Performance", "Cost expected performance"] = revenue_perf_exp
+    st.session_state.df_cost_summary.at["Revenues from Performance", "Cost best performance"] = revenue_perf_max
+    
+    st.session_state.df_cost_summary.at["Costs Social Perks", "Cost worst performance"] = cost_social_perks
+    st.session_state.df_cost_summary.at["Costs Social Perks", "Cost expected performance"] = cost_social_perks
+    st.session_state.df_cost_summary.at["Costs Social Perks", "Cost best performance"] = cost_social_perks
+    
+    st.session_state.df_cost_summary.at["Repayment Fans", "Cost worst performance"] = repayment_perf_min
+    st.session_state.df_cost_summary.at["Repayment Fans", "Cost expected performance"] = repayment_perf_exp
+    st.session_state.df_cost_summary.at["Repayment Fans", "Cost best performance"] = revenue_perf_max
+    
+    st.session_state.df_cost_summary.at["Total Cashflow", "Cost worst performance"] = raised_capital_min + revenue_perf_min - cost_social_perks - repayment_perf_min
+    st.session_state.df_cost_summary.at["Total Cashflow", "Cost expected performance"] = raised_capital_exp + revenue_perf_exp - cost_social_perks - repayment_perf_exp
+    st.session_state.df_cost_summary.at["Total Cashflow", "Cost best performance"] = raised_capital_max + revenue_perf_max - cost_social_perks - repayment_perf_max
+        
+    st.header("Cost Summary")
+    st.dataframe(st.session_state.df_cost_summary)
+    
 if __name__ == '__main__':
     main()
