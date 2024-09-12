@@ -366,11 +366,16 @@ def main():
                     df_league_filtered = df_league_filtered.rename(columns={'CompetitionID':'League'})
                     df_league_filtered.set_index('Season', inplace=True)
                     
-                    #df_attendance_filtered = df_attendance[df_attendance.CompetitionID == mainCompetition]
-                    #df_attendance_filtered = df_attendance_filtered[df_attendance_filtered['Home Team'] == clubname]
+                    df_attendance_filtered = df_attendance[df_attendance['Home Team ID'] == clubID]
+                    df_attendance_filtered['Number of Games'] = 1
+                    df_attendance_filtered = df_attendance_filtered[['SeasonID','CompetitionID','Number of Games','Attendance']].groupby(by=['CompetitionID','SeasonID'],as_index=False).agg({'Number of Games': 'sum','Attendance': 'mean'})
+                    df_attendance_filtered.Attendance = df_attendance_filtered.Attendance.astype(int)
+                    df_attendance_filtered = df_attendance_filtered.rename(columns={'SeasonID':'Season'})
+                    df_attendance_filtered.set_index('Season', inplace=True)
                     st.header("Club performance in main competition")
                     st.dataframe(df_league_filtered)
-                    #st.dataframe(df_attendance_filtered)
+                    st.header("Average Attendance")
+                    st.dataframe(df_attendance_filtered)
                     
 
 
