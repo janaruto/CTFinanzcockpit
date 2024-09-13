@@ -491,9 +491,9 @@ def main():
             repayment_perf_min += r['Costs Min.']
             repayment_perf_exp += r['Costs Exp.']
             repayment_perf_max += r['Costs Max.']
-            revenue_perf_min += r['Costs Min.']
-            revenue_perf_exp += r['Costs Exp.']
-            revenue_perf_max += r['Costs Max.']
+            revenue_perf_min += r['Revenue Min.']
+            revenue_perf_exp += r['Revenue Exp.']
+            revenue_perf_max += r['Revenue Max.']
             
     cost_social_perks = 0
             
@@ -515,7 +515,7 @@ def main():
     
     st.session_state.df_cost_summary.at["Repayment Fans", "Cost worst performance"] = repayment_perf_min
     st.session_state.df_cost_summary.at["Repayment Fans", "Cost expected performance"] = repayment_perf_exp
-    st.session_state.df_cost_summary.at["Repayment Fans", "Cost best performance"] = revenue_perf_max
+    st.session_state.df_cost_summary.at["Repayment Fans", "Cost best performance"] = repayment_perf_max
     
     st.session_state.df_cost_summary.at["Total Cashflow", "Cost worst performance"] = raised_capital_min + revenue_perf_min - cost_social_perks - repayment_perf_min
     st.session_state.df_cost_summary.at["Total Cashflow", "Cost expected performance"] = raised_capital_exp + revenue_perf_exp - cost_social_perks - repayment_perf_exp
