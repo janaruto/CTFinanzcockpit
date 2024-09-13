@@ -139,30 +139,64 @@ def main():
     with col_internalcost:
         internal_costs = st.number_input("Internal Costs", min_value=0, step=1)
     
-    # Create two columns
-    col_funding_button, col_internalcost_button, col_empty = st.columns(3)
-    
-    with col_funding_button:
-        # Button to add the row
-        if st.button("Add row bakers & social perks"):
-            
-            # Add the new row to the DataFrame stored in session state
-            new_row_socialperks = pd.DataFrame([[n_backers, funding_amount_min, internal_costs]], columns=header_socialperks, index=[label_socialperks])
-            
-            st.session_state.df_socialperks = pd.concat([st.session_state.df_socialperks, new_row_socialperks])
-            st.session_state.df_socialperks = st.session_state.df_socialperks.rename_axis("Label")
-            st.success("Row added!")
-    with col_internalcost_button:
-        #Add a reset button to clear the DataFrame
-        if st.button("Reset table bakers & social perks"):
+    # Button to add the row
+    if st.button("Add row Bakers & Social Perks"):
+        
+        # Add the new row to the DataFrame stored in session state
+        new_row_socialperks = pd.DataFrame([[n_backers, funding_amount_min, internal_costs]], columns=header_socialperks, index=[label_socialperks])
+        
+        st.session_state.df_socialperks = pd.concat([st.session_state.df_socialperks, new_row_socialperks])
+        st.session_state.df_socialperks = st.session_state.df_socialperks.rename_axis("Label")
+        st.success("Row added!")
+        
+    # Text input and remove row functionality
+    label_to_remove_social_perks = st.text_input("Enter the label of the row to remove of the Bakers & Social Perks table")
 
-            # Create a MultiIndex for the columns
-            st.session_state.df_socialperks = pd.DataFrame(columns=header_socialperks)
-            st.session_state.df_socialperks =  st.session_state.df_socialperks.rename_axis("Label")
-            st.success("Table reset!")
+    if st.button("Remove row of the Bakers & Social Perks table"):
+        if label_to_remove_social_perks in st.session_state.df_socialperks.index:
+            # Remove the row from the DataFrame
+            st.session_state.df_socialperks = st.session_state.df_socialperks.drop(index=label_to_remove_social_perks)
+            st.success(f"Row '{label_to_remove_social_perks}' removed!")
+        else:
+            st.error(f"Label '{label_to_remove_social_perks}' not found in the DataFrame!")
             
-    with col_empty:
-        pass
+    # Create three columns
+    col_label_edit_socialperks, col_col_edit_socialperks, col_val_edit_socialperks = st.columns(3)
+        
+    # Select a row label and column for editing
+    with col_label_edit_socialperks:
+        label_to_edit_socialperks = st.text_input("Enter the label of the row to edit of the Bakers & Social Perks table")
+    
+    with col_col_edit_socialperks:
+        column_to_edit_socialperks = st.selectbox("Select the column to edit of the Bakers & Social Perks table", options=header_socialperks)
+        
+    with col_val_edit_socialperks:
+        new_value_socialperks = st.text_input(f"Enter the new value for {column_to_edit_socialperks}")
+
+
+    if st.button("Edit cell of the Bakers & Social Perks table"):
+        if label_to_edit_socialperks in st.session_state.df_socialperks.index:
+            try:
+                # Cast to numeric if necessary (except for '$ per Event' which is a string)
+                if column_to_edit_socialperks != "Test":
+                    new_value_socialperks = float(new_value_socialperks)
+                
+                # Update the value in the DataFrame
+                st.session_state.df_socialperks.at[label_to_edit_socialperks, column_to_edit_socialperks] = new_value_socialperks
+                st.success(f"Value updated for '{label_to_edit_socialperks}' in column '{column_to_edit_socialperks}'!")
+            except ValueError:
+                st.error("Invalid value entered!")
+        else:
+            st.error(f"Label '{label_to_edit_socialperks}' not found in the DataFrame!")
+            
+    #Add a reset button to clear the DataFrame
+    if st.button("Reset table Bakers & Social Perks"):
+
+        # Create a MultiIndex for the columns
+        st.session_state.df_socialperks = pd.DataFrame(columns=header_socialperks)
+        st.session_state.df_socialperks =  st.session_state.df_socialperks.rename_axis("Label")
+        st.success("Table reset!")
+            
         
     # Display the DataFrame
     st.write(st.session_state.df_socialperks)
@@ -210,46 +244,77 @@ def main():
         costs_max = st.number_input("Max costs", min_value=0.0, step=1000.0)
         rev_max = st.number_input("Max revenue", min_value=0.0, step=1000.0)
     
-    # Create three columns
-    col_occ_cost1_button, col_occ_cost2_button, col_occ_cost_col_empty = st.columns(3)
-    
-    with col_occ_cost1_button:
-        # Button to add the row
-        if st.button("Add row occurence & costs"):
-            
-            if not label:
-                st.error("Label cannot be empty!")
-            elif label in st.session_state.df_occurence_costs.index:
-                st.error(f"Label '{label}' already exists in the DataFrame!")
-            else:
-                # Convert the boolean to a string or a numeric value if needed
-                payout_mechanism_str = "Yes" if payout_mechanism else "No"
-                
-                # Add the new row to the DataFrame stored in session state
-                new_row = pd.DataFrame([[
-                    payout_mechanism_str, 
-                    occurrence_min, occurrence_expected, occurrence_max, 
-                    costs_min, costs_expected, costs_max, rev_min, rev_expected, rev_max,
-                ]], columns=header, index=[label])
-                
-                st.session_state.df_occurence_costs = pd.concat([st.session_state.df_occurence_costs, new_row])
-                st.session_state.df_occurence_costs = st.session_state.df_occurence_costs.rename_axis("Label")
-                st.success("Row added!")
+    # Button to add the row
+    if st.button("Add row Occurence & Costs"):
+        if not label:
+            st.error("Label cannot be empty!")
+        elif label in st.session_state.df_occurence_costs.index:
+            st.error(f"Label '{label}' already exists in the DataFrame!")
+        else:
+            # Convert the boolean to a string or a numeric value if needed
+            payout_mechanism_str = "Yes" if payout_mechanism else "No"
 
-    with col_occ_cost2_button:
-        #Add a reset button to clear the DataFrame
-        if st.button("Reset table occurence & costs"):
+            # Add the new row to the DataFrame stored in session state
+            new_row = pd.DataFrame([[
+                payout_mechanism_str, 
+                occurrence_min, occurrence_expected, occurrence_max, 
+                costs_min, costs_expected, costs_max, rev_min, rev_expected, rev_max,
+            ]], columns=header, index=[label])
 
-            # Create a MultiIndex for the columns
-            st.session_state.df_occurence_costs = pd.DataFrame(columns=header)
+            st.session_state.df_occurence_costs = pd.concat([st.session_state.df_occurence_costs, new_row])
             st.session_state.df_occurence_costs = st.session_state.df_occurence_costs.rename_axis("Label")
-            st.success("Table reset!")
+            st.success("Row added!")
             
-    with col_occ_cost_col_empty:
-        pass
+    # Text input and remove row functionality
+    label_to_remove = st.text_input("Enter the label of the row to remove of the Occurence & Costs table")
+
+    if st.button("Remove row of the Occurence & Costs table"):
+        if label_to_remove in st.session_state.df_occurence_costs.index:
+            # Remove the row from the DataFrame
+            st.session_state.df_occurence_costs = st.session_state.df_occurence_costs.drop(index=label_to_remove)
+            st.success(f"Row '{label_to_remove}' removed!")
+        else:
+            st.error(f"Label '{label_to_remove}' not found in the DataFrame!")
+            
+    # Create three columns
+    col_label_edit, col_col_edit, col_val_edit = st.columns(3)
         
+    # Select a row label and column for editing
+    with col_label_edit:
+        label_to_edit = st.text_input("Enter the label of the row to edit of the Occurence & Costs table")
+    
+    with col_col_edit:
+        column_to_edit = st.selectbox("Select the column to edit of the Occurence & Costs table", options=header)
+        
+    with col_val_edit:
+        new_value = st.text_input(f"Enter the new value for {column_to_edit}")
+
+
+    if st.button("Edit cell of the Occurence & Costs table"):
+        if label_to_edit in st.session_state.df_occurence_costs.index:
+            try:
+                # Cast to numeric if necessary (except for '$ per Event' which is a string)
+                if column_to_edit != "$ per Event":
+                    new_value = float(new_value)
+                
+                # Update the value in the DataFrame
+                st.session_state.df_occurence_costs.at[label_to_edit, column_to_edit] = new_value
+                st.success(f"Value updated for '{label_to_edit}' in column '{column_to_edit}'!")
+            except ValueError:
+                st.error("Invalid value entered!")
+        else:
+            st.error(f"Label '{label_to_edit}' not found in the DataFrame!")
+
+    # Add a reset button to clear the DataFrame
+    if st.button("Reset table Occurence & Costs"):
+        # Reset the DataFrame
+        st.session_state.df_occurence_costs = pd.DataFrame(columns=header)
+        st.session_state.df_occurence_costs = st.session_state.df_occurence_costs.rename_axis("Label")
+        st.success("Table reset!")
+
+
     # Display the DataFrame
-    st.dataframe(st.session_state.df_occurence_costs) 
+    st.dataframe(st.session_state.df_occurence_costs)
 
         
     
