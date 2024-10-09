@@ -1,7 +1,6 @@
 import plotly.express as px
 import pandas as pd
 import re
-import json
 import streamlit as st
 
 st.set_page_config(layout="wide")
@@ -51,6 +50,54 @@ competitions = [comp for comp in competitions if comp != 'EL']
 competitions = [comp for comp in competitions if comp != 'UCOL']
 
 
+class QPStorage:
+    """Saves values to query params. Use query params to populate values on first run"""
+    class ST:
+        """Streamlit namespace"""
+        @classmethod
+        def number_input(cls, key, value, *args, **kwargs):
+            value = int(st.query_params.get(key, value)) if not st.session_state.get(key) else st.session_state.get(key)
+            input_value = st.number_input(key=key, value=value, *args, **kwargs)
+            st.query_params[key] = input_value
+            return input_value
+
+        @classmethod
+        def selectbox(cls, key, options, *args, **kwargs):
+            try:
+                value = int(st.query_params.get(key, 0)) if not st.session_state.get(key) else options.index(
+                    st.session_state.get(key))
+            except ValueError:
+                value = 0
+            input_value = st.selectbox(key=key, options=options, index=value, *args, **kwargs)
+            st.query_params[key] = options.index(input_value)
+            return input_value
+
+        @classmethod
+        def sidebar_selectbox(cls, key, options, *args, **kwargs):
+            try:
+                value = int(st.query_params.get(key, 0)) if not st.session_state.get(key) else options.index(
+                    st.session_state.get(key))
+            except ValueError:
+                value = 0
+            input_value = st.selectbox(key=key, options=options, index=value, *args, **kwargs)
+            st.query_params[key] = options.index(input_value)
+            return input_value
+
+    class DF:
+        @classmethod
+        def store_or_load(cls, key: str, df: pd.DataFrame):
+            key_prev_state = f"{key}_prev_state"
+            # Populate with initial data from query params on first run
+            if st.query_params.get(key) and not hasattr(st.session_state, key_prev_state):
+                df = pd.read_json(st.query_params[key])
+
+            # Add DF to query params
+            st.query_params[key] = df.to_json()
+            # Add DF previous state
+            st.session_state[key_prev_state] = df
+            return df
+
+
 # Streamlit App
 def main():
 
@@ -61,29 +108,17 @@ def main():
 
     with col_min:
         # Min Funding
-        key = "funding_min"
-        value = int(st.query_params.get(key, 0)) if not st.session_state.get(key) else st.session_state.get(key)
-        funding_min = st.number_input(key=key, label='Minimal amount of funding through Crowdtransfer',min_value=0,max_value=100000000,value=value,step=100000)
-        st.query_params[key] = funding_min
+        funding_min = QPStorage.ST.number_input(key="funding_min", label='Minimal amount of funding through Crowdtransfer',min_value=0,max_value=100000000,value=0,step=100000)
     with col_max:
         # Max Funding
-        key = "funding_max"
-        value = int(st.query_params.get(key, 0)) if not st.session_state.get(key) else st.session_state.get(key)
-        funding_max = st.number_input(key=key, label='Maximum amount of funding through Crowdtransfer',min_value=0,max_value=100000000,value=value,step=100000)
-        st.query_params[key] = funding_max
+        funding_max = QPStorage.ST.number_input(key="funding_max", label='Maximum amount of funding through Crowdtransfer',min_value=0,max_value=100000000,value=0,step=100000)
     with col_pos:
         # Position
-        key = "position"
         options = ["Goalkeeper", "Defense", "Midfield", "Attack", "Team"]
-        value = int(st.query_params.get(key, 0)) if not st.session_state.get(key) else options.index(st.session_state.get(key))
-        position = st.selectbox(key=key, label="Which of these options best describes your funding?", options=options, index=value)
-        st.query_params[key] = options.index(position)
+        position = QPStorage.ST.selectbox(key="position", label="Which of these options best describes your funding?", options=options)
     with col_club:
-        key = "clubname"
         options = list(df_clubs['ClubName'])
-        value = int(st.query_params.get(key, 0)) if not st.session_state.get(key) else options.index(st.session_state.get(key))
-        clubname = st.selectbox(key=key, label='Select your Club', options=options, format_func=lambda x: x.strip(), index=value)
-        st.query_params[key] = options.index(clubname)
+        clubname = QPStorage.ST.selectbox(key="clubname", label='Select your Club', options=options, format_func=lambda x: x.strip())
 
     filtered_df = df_clubs[df_clubs.ClubName == clubname]
     filtered_df = filtered_df.reset_index(drop=True)
@@ -116,16 +151,10 @@ def main():
         quartile_dict = {label: df_StatsAll[df_StatsAll['Quartile'] == label] for label in labels}
         
         # Dropdown to select an option from the dictionary keys
-        key = "selected_option"
         options = list(quartile_dict.keys())
-        try:
-            value = int(st.query_params.get(key, 0)) if not st.session_state.get(key) else options.index(st.session_state.get(key))
-        except ValueError:
-            value = 0
-        selected_option = st.selectbox(key=key,
+        selected_option = QPStorage.ST.selectbox(key="selected_option",
             label="Choose the range where your player's market value falls (defined by the 25%, 50%, 75% quartile borders of the Market Values according to the position and the league in which the selected club competes, over the last 5 seasons):",
-            options=options, index=value)
-        st.query_params[key] = options.index(selected_option)
+            options=options)
 
         
     else:
@@ -217,15 +246,8 @@ def main():
         st.session_state.df_socialperks =  st.session_state.df_socialperks.rename_axis("Label")
         st.success("Table reset!")
 
-    key = "social_perks"
-    key_prev_state = "social_perks_prev_state"
-    # Populate with initial data from query params on first run
-    if st.query_params.get(key) and not hasattr(st.session_state, key_prev_state):
-        st.session_state.df_socialperks = pd.read_json(st.query_params[key])
-    # Add DF to query params
-    st.query_params[key] = st.session_state.df_socialperks.to_json()
-    # Add DF previous state
-    st.session_state[key_prev_state] = st.session_state.df_socialperks
+    # Sync DF with query params
+    st.session_state.df_socialperks = QPStorage.DF.store_or_load(key="social_perks", df=st.session_state.df_socialperks)
 
     # Display the DataFrame
     st.write(st.session_state.df_socialperks)
@@ -341,15 +363,8 @@ def main():
         st.session_state.df_occurence_costs = st.session_state.df_occurence_costs.rename_axis("Label")
         st.success("Table reset!")
 
-    key = "occurence_and_costs"
-    key_prev_state = "occurence_and_costs_prev_state"
-    # Populate with initial data from query params on first run
-    if st.query_params.get(key) and not hasattr(st.session_state, key_prev_state):
-        st.session_state.df_occurence_costs = pd.read_json(st.query_params[key])
-    # Add DF to query params
-    st.query_params[key] = st.session_state.df_occurence_costs.to_json()
-    # Add DF previous state
-    st.session_state[key_prev_state] = st.session_state.df_occurence_costs
+    # Sync DF with query params
+    st.session_state.df_occurence_costs = QPStorage.DF.store_or_load(key="occurence_and_costs", df=st.session_state.df_occurence_costs)
 
     # Display the DataFrame
     st.dataframe(st.session_state.df_occurence_costs)
@@ -362,11 +377,8 @@ def main():
     if position:
         
         with st.sidebar:
-            key = "stats_table"
             options = ['All competitions', 'Main competition', 'League']
-            value = int(st.query_params.get(key, 0)) if not st.session_state.get(key) else options.index(st.session_state.get(key))
-            stats_table = st.sidebar.selectbox(key=key, label='Choose a stats table:', options=options, index=value)
-            st.query_params[key] = options.index(stats_table)
+            stats_table = QPStorage.ST.sidebar_selectbox(key="stats_table", label='Choose a stats table:', options=options)
 
             if position != 'Team':
                 playerIds = quartile_dict[selected_option]['PlayerID'].unique().tolist()
@@ -413,11 +425,8 @@ def main():
                     
                     st.dataframe(df_Stats.describe().round(1).applymap(lambda x: f"{x:.1f}"))
 
-                    key = "column"
                     options = list(df_Stats.columns)
-                    value = int(st.query_params.get(key, 0)) if not st.session_state.get(key) else options.index(st.session_state.get(key))
-                    column = st.sidebar.selectbox(key=key, label='Choose a column for detailed insights:', options=options, index=value)
-                    st.query_params[key] = options.index(column)
+                    column = QPStorage.ST.sidebar_selectbox(key="column", label='Choose a column for detailed insights:', options=options)
                     # Check if the column selection is valid
                     if column:
                         # Compute quartiles and other statistics
