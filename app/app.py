@@ -51,7 +51,7 @@ competitions = [comp for comp in competitions if comp != 'UCOL']
 
 
 class QPStorage:
-    """Saves values to query params. Use query params to populate values on first run"""
+    """Saves values to query params. Uses query params to populate values on first run"""
     class ST:
         """Streamlit namespace"""
         @classmethod
@@ -85,7 +85,7 @@ class QPStorage:
 
     class DF:
         @classmethod
-        def store_or_load(cls, key: str, df: pd.DataFrame):
+        def sync(cls, key: str, df: pd.DataFrame):
             key_prev_state = f"{key}_prev_state"
             # Populate with initial data from query params on first run
             if st.query_params.get(key) and not hasattr(st.session_state, key_prev_state):
@@ -247,7 +247,7 @@ def main():
         st.success("Table reset!")
 
     # Sync DF with query params
-    st.session_state.df_socialperks = QPStorage.DF.store_or_load(key="social_perks", df=st.session_state.df_socialperks)
+    st.session_state.df_socialperks = QPStorage.DF.sync(key="social_perks", df=st.session_state.df_socialperks)
 
     # Display the DataFrame
     st.write(st.session_state.df_socialperks)
@@ -364,7 +364,7 @@ def main():
         st.success("Table reset!")
 
     # Sync DF with query params
-    st.session_state.df_occurence_costs = QPStorage.DF.store_or_load(key="occurence_and_costs", df=st.session_state.df_occurence_costs)
+    st.session_state.df_occurence_costs = QPStorage.DF.sync(key="occurence_and_costs", df=st.session_state.df_occurence_costs)
 
     # Display the DataFrame
     st.dataframe(st.session_state.df_occurence_costs)
