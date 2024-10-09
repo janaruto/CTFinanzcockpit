@@ -1,7 +1,6 @@
 import plotly.express as px
 import pandas as pd
 import re
-import requests
 import streamlit as st
 
 st.set_page_config(layout="wide")
@@ -51,26 +50,76 @@ competitions = [comp for comp in competitions if comp != 'EL']
 competitions = [comp for comp in competitions if comp != 'UCOL']
 
 
+class QPStorage:
+    """Saves values to query params. Uses query params to populate values on first run"""
+    class ST:
+        """Streamlit namespace"""
+        @classmethod
+        def number_input(cls, key, value, *args, **kwargs):
+            value = int(st.query_params.get(key, value)) if not st.session_state.get(key) else st.session_state.get(key)
+            input_value = st.number_input(key=key, value=value, *args, **kwargs)
+            st.query_params[key] = input_value
+            return input_value
+
+        @classmethod
+        def selectbox(cls, key, options, *args, **kwargs):
+            try:
+                value = int(st.query_params.get(key, 0)) if not st.session_state.get(key) else options.index(
+                    st.session_state.get(key))
+            except ValueError:
+                value = 0
+            input_value = st.selectbox(key=key, options=options, index=value, *args, **kwargs)
+            st.query_params[key] = options.index(input_value)
+            return input_value
+
+        @classmethod
+        def sidebar_selectbox(cls, key, options, *args, **kwargs):
+            try:
+                value = int(st.query_params.get(key, 0)) if not st.session_state.get(key) else options.index(
+                    st.session_state.get(key))
+            except ValueError:
+                value = 0
+            input_value = st.selectbox(key=key, options=options, index=value, *args, **kwargs)
+            st.query_params[key] = options.index(input_value)
+            return input_value
+
+    class DF:
+        @classmethod
+        def sync(cls, key: str, df: pd.DataFrame):
+            key_prev_state = f"{key}_prev_state"
+            # Populate with initial data from query params on first run
+            if st.query_params.get(key) and not hasattr(st.session_state, key_prev_state):
+                df = pd.read_json(st.query_params[key])
+
+            # Add DF to query params
+            st.query_params[key] = df.to_json()
+            # Add DF previous state
+            st.session_state[key_prev_state] = df
+            return df
+
+
 # Streamlit App
 def main():
-    
+
     st.title('Finanzcockpit')
         
     # User input features
     col_min, col_max, col_pos, col_club  = st.columns(4)
-    
+
     with col_min:
         # Min Funding
-        funding_min = st.number_input(label='Mnimal amount of funding through Crowdtransfer',min_value=0,max_value=100000000,value=0,step=100000)
+        funding_min = QPStorage.ST.number_input(key="funding_min", label='Minimal amount of funding through Crowdtransfer',min_value=0,max_value=100000000,value=0,step=100000)
     with col_max:
         # Max Funding
-        funding_max = st.number_input(label='Maximum amount of funding through Crowdtransfer',min_value=0,max_value=100000000,value=0,step=100000)
+        funding_max = QPStorage.ST.number_input(key="funding_max", label='Maximum amount of funding through Crowdtransfer',min_value=0,max_value=100000000,value=0,step=100000)
     with col_pos:
         # Position
-        position = st.selectbox("Which of these options best describes your funding?",["Goalkeeper", "Defense", "Midfield", "Attack", "Team"], index = 0)
+        options = ["Goalkeeper", "Defense", "Midfield", "Attack", "Team"]
+        position = QPStorage.ST.selectbox(key="position", label="Which of these options best describes your funding?", options=options)
     with col_club:
-        clubname = st.selectbox('Select your Club', df_clubs['ClubName'], format_func=lambda x: x.strip(), index=0)
-    
+        options = list(df_clubs['ClubName'])
+        clubname = QPStorage.ST.selectbox(key="clubname", label='Select your Club', options=options, format_func=lambda x: x.strip())
+
     filtered_df = df_clubs[df_clubs.ClubName == clubname]
     filtered_df = filtered_df.reset_index(drop=True)
     mainCompetition = filtered_df.at[0, 'CompetitionID']
@@ -102,10 +151,11 @@ def main():
         quartile_dict = {label: df_StatsAll[df_StatsAll['Quartile'] == label] for label in labels}
         
         # Dropdown to select an option from the dictionary keys
-        selected_option = st.selectbox(
-            "Choose the range where your player's market value falls (defined by the 25%, 50%, 75% quartile borders of the Market Values according to the position and the league in which the selected club competes, over the last 5 seasons):",
-            list(quartile_dict.keys()))
-    
+        options = list(quartile_dict.keys())
+        selected_option = QPStorage.ST.selectbox(key="selected_option",
+            label="Choose the range where your player's market value falls (defined by the 25%, 50%, 75% quartile borders of the Market Values according to the position and the league in which the selected club competes, over the last 5 seasons):",
+            options=options)
+
         
     else:
         # Dropdown to select an option from the dictionary keys
@@ -138,17 +188,16 @@ def main():
         funding_amount_min = st.number_input("Min. funding Amount", min_value=0, step=1)
     with col_internalcost:
         internal_costs = st.number_input("Internal Costs", min_value=0, step=1)
-    
-    # Button to add the row
+
     if st.button("Add row Bakers & Social Perks"):
-        
+
         # Add the new row to the DataFrame stored in session state
         new_row_socialperks = pd.DataFrame([[n_backers, funding_amount_min, internal_costs]], columns=header_socialperks, index=[label_socialperks])
         
         st.session_state.df_socialperks = pd.concat([st.session_state.df_socialperks, new_row_socialperks])
         st.session_state.df_socialperks = st.session_state.df_socialperks.rename_axis("Label")
         st.success("Row added!")
-        
+
     # Text input and remove row functionality
     label_to_remove_social_perks = st.text_input("Enter the label of the row to remove of the Bakers & Social Perks table")
 
@@ -196,13 +245,15 @@ def main():
         st.session_state.df_socialperks = pd.DataFrame(columns=header_socialperks)
         st.session_state.df_socialperks =  st.session_state.df_socialperks.rename_axis("Label")
         st.success("Table reset!")
-            
-        
+
+    # Sync DF with query params
+    st.session_state.df_socialperks = QPStorage.DF.sync(key="social_perks", df=st.session_state.df_socialperks)
+
     # Display the DataFrame
     st.write(st.session_state.df_socialperks)
-    
 
-        
+
+
     ###########################################################################
     # Occurence & Costs & Revenue
     ###########################################################################
@@ -312,6 +363,8 @@ def main():
         st.session_state.df_occurence_costs = st.session_state.df_occurence_costs.rename_axis("Label")
         st.success("Table reset!")
 
+    # Sync DF with query params
+    st.session_state.df_occurence_costs = QPStorage.DF.sync(key="occurence_and_costs", df=st.session_state.df_occurence_costs)
 
     # Display the DataFrame
     st.dataframe(st.session_state.df_occurence_costs)
@@ -324,9 +377,9 @@ def main():
     if position:
         
         with st.sidebar:
-            
-            stats_table = st.sidebar.selectbox('Choose a stats table:', ['All competitions', 'Main competition', 'League'])
-            
+            options = ['All competitions', 'Main competition', 'League']
+            stats_table = QPStorage.ST.sidebar_selectbox(key="stats_table", label='Choose a stats table:', options=options)
+
             if position != 'Team':
                 playerIds = quartile_dict[selected_option]['PlayerID'].unique().tolist()
             else:
@@ -371,8 +424,9 @@ def main():
                 if position != 'Team':
                     
                     st.dataframe(df_Stats.describe().round(1).applymap(lambda x: f"{x:.1f}"))
-                
-                    column = st.sidebar.selectbox('Choose a column for detailed insights:', df_Stats.columns)
+
+                    options = list(df_Stats.columns)
+                    column = QPStorage.ST.sidebar_selectbox(key="column", label='Choose a column for detailed insights:', options=options)
                     # Check if the column selection is valid
                     if column:
                         # Compute quartiles and other statistics
@@ -523,6 +577,6 @@ def main():
         
     st.header("Cost Summary")
     st.dataframe(st.session_state.df_cost_summary)
-    
+
 if __name__ == '__main__':
     main()
