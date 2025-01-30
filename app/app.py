@@ -130,7 +130,7 @@ def main():
     #Market Value
     ################################################################################
 
-    if position != 'Team':
+    if (position != 'Team') and (clubname != 'Unknown'):
         
         # Grouping by PlayerID and Season
         df_StatsAll = df_playerstats[(df_playerstats.CompetitionID == mainCompetition) & (df_playerstats.Position==position)]
@@ -156,6 +156,12 @@ def main():
             label="Choose the range where your player's market value falls (defined by the 25%, 50%, 75% quartile borders of the Market Values according to the position and the league in which the selected club competes, over the last 5 seasons):",
             options=options)
 
+    elif clubname == 'Unknown':
+        
+        # create empty player for small clubs where no data can be found
+        columns_empty = ["Goals", "Assists", "ScorerPoints", "MinutesPlayed", "Appearances"]
+        index_empty = ["count", "mean", "std", "min", "25%", "50%", "75%", "max"]
+        df_StatsAll = pd.DataFrame(index=index_empty, columns=columns_empty)
         
     else:
         # Dropdown to select an option from the dictionary keys
@@ -380,7 +386,7 @@ def main():
             options = ['All competitions', 'Main competition', 'League']
             stats_table = QPStorage.ST.sidebar_selectbox(key="stats_table", label='Choose a stats table:', options=options)
 
-            if position != 'Team':
+            if (position != 'Team') and (clubname != 'Unknown'):
                 playerIds = quartile_dict[selected_option]['PlayerID'].unique().tolist()
             else:
                 playerIds = []
@@ -421,7 +427,7 @@ def main():
                     df_Stats = df_Stats[['CompetitionID', 'Season','Goals','GoalsConceded', 'Assists', 'ScorerPoints', 'YellowCards','RedCards']]
                 
 
-                if position != 'Team':
+                if (position != 'Team') and (clubname != 'Unknown'):
                     
                     st.dataframe(df_Stats.describe().round(1).applymap(lambda x: f"{x:.1f}"))
 
@@ -475,7 +481,10 @@ def main():
                         
                     else:
                         pass
-                        
+                
+                elif clubname == 'Unknown':
+                    pass
+                
                 else:
                     df_Stats = df_Stats.sort_values(by=['Season', 'CompetitionID'], ascending=False)
                     st.dataframe(df_Stats.set_index(['CompetitionID', 'Season']))
